@@ -1,0 +1,3 @@
+# Notebook Chores List
+* Transcribe physical notes into relative notebooks (like the single period binomial pricing model)
+* Find balance between making progress and documenting...

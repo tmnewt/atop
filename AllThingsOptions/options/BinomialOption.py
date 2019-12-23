@@ -63,7 +63,7 @@ All outputs are rounded to {rnd} decimal places. {hdsup} {ovride_msg}\n'''.forma
                                                                                 strike_p = self.strike_price,
                                                                                 up = self.up_price,
                                                                                 down = self.down_price,
-                                                                                rf = round(self.risk_free, 5),
+                                                                                rf = round(self.risk_free, 5)*100,
                                                                                 rnd = rounding,
                                                                                 hdsup = headsup,
                                                                                 ovride_msg = overide_message ))

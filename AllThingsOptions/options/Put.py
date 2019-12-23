@@ -12,7 +12,7 @@ class PutOption(BinOption):
         if (not override_down_payoff):
             down_payoff = max(self.strike_price - self.down_price, 0)
 
-        super().__init__(stock_price, strike_price, up_price, down_price, risk_free, override_up_payoff, override_down_payoff)
+        super().__init__(stock_price, strike_price, up_price, down_price, risk_free, override_up_payoff, override_down_payoff, overridden=(override_down_payoff or override_up_payoff))
 
     def __repr__(self):
         return "PUT"

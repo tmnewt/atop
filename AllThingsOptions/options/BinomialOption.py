@@ -8,13 +8,11 @@ class BinomialOption:
         The risk free rate used should reflect the actual rate of interest earned during the time period.
         For instance, if the option is for 6 months, enter the calculated interest rate earned in those 6 months.
 
-        Option type is Call by default. Use option_type = "Put" to change to put.
-
         By default, period payoffs for both up and down states are calculated internally.
         User can override these calculated payoffs by passing their own values.
         This is useful for calculating an 'inner' single period of a much larger multi-period option pricing model.
         Consider that the payoffs are not the possible stock values at some arbitrary time before maturity but 
-        instead the price of the next binomial period. 
+        instead the price of the next binomial period option. 
         '''
     def __init__(self, stock_price, strike_price, up_price, down_price, risk_free, up_payoff, down_payoff, overridden=False):
         self.stock_price = stock_price
@@ -38,25 +36,42 @@ class BinomialOption:
 
 
 
-    # packed into a nice display function    
+    # packed into a nice function to quickly display information   
     def print_calc_values(self, rounding = 2, hide_hegde_ratio = False, hide_risk_free_units = False, hide_state_payoffs = False, hide_risk_neutral_probabilites = False):
-        overide_message = ''
-        if self.overridden:
-            overide_message = 'User has opted to override payoff values.'
+        
 
         # provides a message to user if any field is hidden.
         if hide_hegde_ratio or hide_risk_free_units or hide_state_payoffs or hide_risk_neutral_probabilites:
             headsup = 'Additionally, not all calculated fields are displayed!'
         else:
             headsup = ''
+
+        overide_message = ''
+        if self.overridden:
+            overide_message = '\nUSER HAS OPTED TO OVERRIDE PAYOFF VALUES! BE AWARE THIS WILL AFFECT CALCULATIONS!'
         
         # message about inputed values
-        print('''The following values are for a single period {self.option_type} option where the underlying value is {self.stock_price}, a strike price of {self.strike_price}, an up value of {self.up_price}, 
-a down value of {self.down_price}, and a risk free rate of {self.risk_free}%. All outputs are rounded to {rounding} decimal places. {headsup} {overide_message}''')
-
-        print('''\n------------------------
-{} Option Information
-------------------------'''.format(self.option_type))
+        # Some visual padding
+        print('===============================================================================')
+        print('  INFORMATION FOR A SINGLE PEIORD {} OPTION USING BINMOMIAL PRICING METHOD'.format(self))
+        print('===============================================================================')
+        
+        print('''\nThe calculations below are for a single period {op_type} option where the underlying value is {stock_p}, 
+with a strike price of {strike_p}, an up price of {up}, a down price of {down}, and a risk free rate of {rf}%.
+All outputs are rounded to {rnd} decimal places. {hdsup} {ovride_msg}\n'''.format(op_type = self,
+                                                                                stock_p = self.stock_price,
+                                                                                strike_p = self.strike_price,
+                                                                                up = self.up_price,
+                                                                                down = self.down_price,
+                                                                                rf = self.risk_free,
+                                                                                rnd = rounding,
+                                                                                hdsup = headsup,
+                                                                                ovride_msg = overide_message ))
+        
+        # Still in the print_calc_values function
+        print('--------------')
+        print('Calculations')
+        print('--------------')
         
         print('Calculated Option Price: {}'.format(round(self.option_price, rounding)))
         
@@ -78,8 +93,9 @@ a down value of {self.down_price}, and a risk free rate of {self.risk_free}%. Al
         if hide_risk_neutral_probabilites:
             pass
         else: 
-            print('Calculated risk neutral probability for up state is {} and for down state risk neutral probability is {}'.format(round(self.up_risk_neutral_prob, rounding), round(self.down_risk_neutral_prob, rounding)))
-
+            print('Calculated risk neutral probability for up state is {} and for down state risk neutral probability is {}'.format(round(self.up_risk_neutral_prob, rounding), 
+                                                                                                                                    round(self.down_risk_neutral_prob, rounding)))
+        print('_____________________________________________________________________________________________________________\n')
 
 
 

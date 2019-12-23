@@ -51,7 +51,7 @@ class BinomialOption:
             headsup = ''
         
         # message about inputed values
-        print('''The following values are for a single period {self.option_type} option where the underlying value is {self.stock_price}, a strike price of {self.strike_price}, an up value of {self.up_price}, 
+        print('''The following values are for a single period {self} option where the underlying value is {self.stock_price}, a strike price of {self.strike_price}, an up value of {self.up_price}, 
 a down value of {self.down_price}, and a risk free rate of {self.risk_free}%. All outputs are rounded to {rounding} decimal places. {headsup} {overide_message}''')
 
         print('''\n------------------------

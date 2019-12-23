@@ -2,7 +2,7 @@ import AllThingsOptions.BinomialOption as BinOption
 
 class CallOption(BinOption):
     def __init__(self, stock_price, strike_price, up_price, down_price, risk_free, override_up_payoff = None, override_down_payoff = None):
-        
+
         up_payoff = override_up_payoff
         down_payoff = override_down_payoff
         
@@ -14,5 +14,5 @@ class CallOption(BinOption):
 
         super().__init__(stock_price, strike_price, up_price, down_price, risk_free, up_payoff, down_payoff)
 
-
-        
+    def __repr__(self):
+        return "CALL"

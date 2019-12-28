@@ -1,5 +1,5 @@
-from allthingsoptions.options.calloption import CallOption 
-from allthingsoptions.options.putoption import PutOption
+from atop.options.calloption import CallOption 
+from atop.options.putoption import PutOption
 
 bc = CallOption(100, 110, 120, 90.25, 0.0513)
 bc.print_calc_values()

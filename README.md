@@ -3,7 +3,7 @@
 repo will host and document anything option related. 
 
 
-## What da got?:
+## Whatcha got?:
 Currently supports single period binomial pricing method for both calls and puts. Pass in the current underlying price, the strike price, the up value, the down value, and a risk-free rate and get back the option's price, as well as additional option data such as risk-neutral probabilites,hedge-ratio, etc. Can also override the state payoff values (very useful in multi-period binomial pricing)
 
 ## How to get running?

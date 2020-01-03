@@ -37,7 +37,12 @@ class BinomialOption:
 
 
     # packed into a nice function to quickly display information   
-    def print_calc_values(self, rounding = 2, hide_hegde_ratio = False, hide_risk_free_units = False, hide_state_payoffs = False, hide_risk_neutral_probabilites = False):
+    def print_calc_values(self, 
+                        rounding = 2, 
+                        hide_hegde_ratio = False, 
+                        hide_risk_free_units = False, 
+                        hide_state_payoffs = False, 
+                        hide_risk_neutral_probabilites = False):
         
 
         # provides a message to user if any field is hidden.
@@ -59,10 +64,10 @@ class BinomialOption:
         print('''\nThe calculations below are for a single period {op_type} option where the underlying value is {stock_p}, 
 with a strike price of {strike_p}, an up price of {up}, a down price of {down}, and a risk free rate of {rf}%.
 All outputs are rounded to {rnd} decimal places. {hdsup} {ovride_msg}\n'''.format(op_type = self,
-                                                                                stock_p = self.stock_price,
-                                                                                strike_p = self.strike_price,
-                                                                                up = self.up_price,
-                                                                                down = self.down_price,
+                                                                                stock_p = round(self.stock_price, rounding),
+                                                                                strike_p = round(self.strike_price, rounding),
+                                                                                up = round(self.up_price, rounding),
+                                                                                down = round(self.down_price, rounding),
                                                                                 rf = round(self.risk_free, 5)*100,
                                                                                 rnd = rounding,
                                                                                 hdsup = headsup,
@@ -73,7 +78,7 @@ All outputs are rounded to {rnd} decimal places. {hdsup} {ovride_msg}\n'''.forma
         print('Calculations')
         print('--------------')
         
-        print('Calculated Option Price: {}'.format(round(self.option_price, rounding)))
+        print('Calculated Option Price: $ {}'.format(round(self.option_price, rounding)))
         
         if hide_hegde_ratio:
             pass
@@ -83,18 +88,19 @@ All outputs are rounded to {rnd} decimal places. {hdsup} {ovride_msg}\n'''.forma
         if hide_risk_free_units:
             pass
         else:
-            print('Calculated present value of bond position: {}'.format(round(self.rf_units, rounding)))
+            print('Calculated present value of bond position: $ {}'.format(round(self.rf_units, rounding)))
 
         if hide_state_payoffs:
             pass
         else:
-            print('Up state payoff is {} and down state payoff is {}'.format(self.up_payoff, self.down_payoff))
+            print('Up state payoff is {} and down state payoff is {}'.format(round(self.up_payoff, rounding),
+                                                                            round(self.down_payoff, rounding)))
 
         if hide_risk_neutral_probabilites:
             pass
         else: 
-            print('Calculated risk neutral probability for up state is {} and for down state risk neutral probability is {}'.format(round(self.up_risk_neutral_prob, rounding), 
-                                                                                                                                    round(self.down_risk_neutral_prob, rounding)))
+            print('Calculated risk-neutral probability for up state is {}'.format(round(self.up_risk_neutral_prob, rounding)))
+            print('Calculated risk-neutral probability for down state is {}'.format(round(self.down_risk_neutral_prob, rounding)))
         print('_____________________________________________________________________________________________________________\n')
 
 

@@ -101,7 +101,7 @@ All outputs are rounded to {rnd} decimal places. {hdsup} {ovride_msg}\n'''.forma
         else: 
             print('Calculated risk-neutral probability for up state is {}'.format(round(self.up_risk_neutral_prob, rounding)))
             print('Calculated risk-neutral probability for down state is {}'.format(round(self.down_risk_neutral_prob, rounding)))
-        print('_____________________________________________________________________________________________________________\n')
+        print('________________________________________________________________________________________________________\n')
 
 
 

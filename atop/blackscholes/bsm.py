@@ -35,7 +35,6 @@ def bsm_find_put_price(underlying_asset_price, strike_price, annual_volatility, 
     return price
 
 
-
 #playing around.
 # check to see if the following produces the correct results.
 call_example = bsm_find_call_price(100, 110, 0.14247, 0.05, 1)

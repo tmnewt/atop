@@ -18,10 +18,14 @@ class BsmNode:
         self.n2 = self.normcdf_calc()[1]
 
         self.price = self.price_calc()
+        
+        # greeks
+        self.delta = self.delta_calc()
+        self.gamma = self.gamma_calc()
 
-    # class calculations
+    # internal class calculations
     def d1_calc(self):
-        return (log(self.underlying/self.strike) + (self.risk_free + (self.volatility**2)/2)*self.time_in_years)/(self.volatility * sqrt(self.time_in_years))
+        return (log(self.underlying/self.strike) + (self.risk_free + (self.volatility**2)/2)*self.time_in_years) / (self.volatility * sqrt(self.time_in_years))
         
     def d2_calc(self):
         return self.d1 - (self.volatility * sqrt(self.time_in_years))
@@ -43,6 +47,44 @@ class BsmNode:
             price = -self.underlying * self.n1 + self.strike * exp(-self.risk_free * self.time_in_years) * self.n2
         return price
     
+    # the greeks
+    def delta_calc(self):
+        if self.op_type == 'Call':
+            delta = norm.cdf(self.d1)
+        else:
+            delta = -norm.cdf(-self.d1)
+        return delta
 
+    def gamma_calc(self):
+        return (1/(self.underlying*self.volatility*sqrt(self.time_in_years))) * norm.pdf(self.d1)
+    
+    def theta_calc(self):
+        if self.op_type == 'Call':
+            pass
+        else:
+            pass
+        return NotImplemented
+
+    def vega_calc(self):
+        if self.op_type == 'Call':
+            pass
+        else:
+            pass
+        return NotImplemented
+
+    def rho_calc(self):
+        if self.op_type == 'Call':
+            pass
+        else:
+            pass
+        return NotImplemented
 
         
+example = BsmNode('Call', 100, 110, 0.14247, 0.05, 1)
+print(example.delta)
+print(example.gamma)
+example = BsmNode('Put', 100, 110, 0.14247, 0.05, 1)
+print(example.delta)
+print(example.gamma)
+print(example.theta_calc())
+

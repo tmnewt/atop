@@ -64,7 +64,7 @@ class BinomialOption:
         print('===============================================================================')
         
         print('''\nThe calculations below are for a single period {op_type} option where the underlying value is {stock_p}, 
-with a strike price of {strike_p}, an up price of {up}, a down price of {down}, and a risk free rate of {rf}%.
+with a strike price of {strike_p}, an up price of {up}, a down price of {down}, and a risk free rate of {rf}.
 All outputs are rounded to {rnd} decimal places. {hdsup} {overide_msg}\n'''.format(op_type = self,
                                                                                 stock_p = round(self.stock_price, rounding),
                                                                                 strike_p = round(self.strike_price, rounding),

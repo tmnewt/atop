@@ -1,5 +1,5 @@
 class BinomialOption:
-    '''Creates a single-period two-state option object, by default, a call option.
+    '''Creates a single-period two-state option object.
         
         Object calculates price (premium) of single-period option of an arbitrary time period
         Requires current underlying stock price, strike price, price in up state,

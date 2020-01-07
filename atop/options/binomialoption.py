@@ -1,5 +1,5 @@
 class BinomialOption:
-    '''Creates a single-period two-state option object, by default, a call option.
+    '''Creates a single-period two-state option object.
         
         Object calculates price (premium) of single-period option of an arbitrary time period
         Requires current underlying stock price, strike price, price in up state,
@@ -12,7 +12,9 @@ class BinomialOption:
         User can override these calculated payoffs by passing their own values.
         This is useful for calculating an 'inner' single period of a much larger multi-period option pricing model.
         Consider that the payoffs are not the possible stock values at some arbitrary time before maturity but 
-        instead the price of the next binomial period option. 
+        instead the price of the next binomial period option.
+
+        Dev note: This easily causes confusion, consider breaking apart this functionality.
         '''
     def __init__(self, stock_price, strike_price, up_price, down_price, risk_free, up_payoff, down_payoff, overridden=False):
         self.stock_price = stock_price
@@ -39,14 +41,14 @@ class BinomialOption:
     # packed into a nice function to quickly display information   
     def print_calc_values(self, 
                         rounding = 2, 
-                        hide_hegde_ratio = False, 
+                        hide_hedge_ratio = False, 
                         hide_risk_free_units = False, 
                         hide_state_payoffs = False, 
                         hide_risk_neutral_probabilites = False):
         
 
         # provides a message to user if any field is hidden.
-        if hide_hegde_ratio or hide_risk_free_units or hide_state_payoffs or hide_risk_neutral_probabilites:
+        if hide_hedge_ratio or hide_risk_free_units or hide_state_payoffs or hide_risk_neutral_probabilites:
             headsup = 'Additionally, not all calculated fields are displayed!'
         else:
             headsup = ''
@@ -55,15 +57,15 @@ class BinomialOption:
         if self.overridden:
             overide_message = '\nUSER HAS OPTED TO OVERRIDE PAYOFF VALUES! BE AWARE THIS WILL AFFECT CALCULATIONS!'
         
-        # message about inputed values
+        # message about input values
         # Some visual padding
         print('===============================================================================')
-        print('  INFORMATION FOR A SINGLE PEIORD {} OPTION USING BINMOMIAL PRICING METHOD'.format(self))
+        print('  INFORMATION FOR A SINGLE PEIORD {} OPTION USING BINOMIAL PRICING METHOD'.format(self))
         print('===============================================================================')
         
         print('''\nThe calculations below are for a single period {op_type} option where the underlying value is {stock_p}, 
-with a strike price of {strike_p}, an up price of {up}, a down price of {down}, and a risk free rate of {rf}%.
-All outputs are rounded to {rnd} decimal places. {hdsup} {ovride_msg}\n'''.format(op_type = self,
+with a strike price of {strike_p}, an up price of {up}, a down price of {down}, and a risk free rate of {rf}.
+All outputs are rounded to {rnd} decimal places. {hdsup} {overide_msg}\n'''.format(op_type = self,
                                                                                 stock_p = round(self.stock_price, rounding),
                                                                                 strike_p = round(self.strike_price, rounding),
                                                                                 up = round(self.up_price, rounding),
@@ -71,7 +73,7 @@ All outputs are rounded to {rnd} decimal places. {hdsup} {ovride_msg}\n'''.forma
                                                                                 rf = round(self.risk_free, 5)*100,
                                                                                 rnd = rounding,
                                                                                 hdsup = headsup,
-                                                                                ovride_msg = overide_message ))
+                                                                                overide_msg = overide_message ))
         
         # Still in the print_calc_values function
         print('--------------')
@@ -80,7 +82,7 @@ All outputs are rounded to {rnd} decimal places. {hdsup} {ovride_msg}\n'''.forma
         
         print('Calculated Option Price: $ {}'.format(round(self.option_price, rounding)))
         
-        if hide_hegde_ratio:
+        if hide_hedge_ratio:
             pass
         else:
             print('Calculated Hedge Ratio: {}'.format(round(self.hedge_ratio, rounding)))

@@ -197,12 +197,12 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
         else:
             print('greek theta = {}'.format(round(self.theta, rounding)))
         
-example = BsmNode('Call', 100, 110, 0.14247, 0.05, 1)
-print(example.delta)
-print(example.gamma)
-example = BsmNode('Put', 100, 110, 0.14247, 0.05, 1)
-print(example.delta)
-print(example.gamma)
-print(example.theta_calc())
-example.print_calc_values()
+#example = BsmNode('Call', 100, 110, 0.14247, 0.05, 1)
+#print(example.delta)
+#print(example.gamma)
+#example = BsmNode('Put', 100, 110, 0.14247, 0.05, 1)
+#print(example.delta)
+#print(example.gamma)
+#print(example.theta_calc())
+#example.print_calc_values()
 

@@ -90,8 +90,8 @@ d = np.array(generic_short_put_payoffs(30, 2.59))
 #print(d)
 #works
 
-e = np.array(generic_stock_long_payoffs(40, 0.04))
-f = np.array(generic_stock_short_payoffs(20, 0.10))
+#e = np.array(generic_stock_long_payoffs(40, 0.04))
+#f = np.array(generic_stock_short_payoffs(20, 0.10))
 
 x = np.arange(0, 101)
 
@@ -100,11 +100,11 @@ y = a + c
 
 #plt.plot(x, a, label='Long Call')
 #plt.plot(x, c, label='Long Put')
-#plt.plot(x, y, label='Together')
+plt.plot(x, y, label='Together')
 
-plt.plot([0,0], [100, 0])
-plt.plot(x, e, label='Long Stock')
-plt.plot(x, f, label='Short Stock')
+plt.plot(np.arange(100) , np.zeros(100))
+#plt.plot(x, e, label='Long Stock')
+#plt.plot(x, f, label='Short Stock')
 
 plt.xlabel('Underlying Value')
 plt.ylabel('Profit')

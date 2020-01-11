@@ -101,8 +101,7 @@ y = a + c
 #plt.plot(x, a, label='Long Call')
 #plt.plot(x, c, label='Long Put')
 plt.plot(x, y, label='Together')
-
-plt.plot(np.arange(100) , np.zeros(100))
+plt.axhline(y=0, color='r', linestyle='--')
 #plt.plot(x, e, label='Long Stock')
 #plt.plot(x, f, label='Short Stock')
 

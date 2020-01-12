@@ -4,9 +4,11 @@ class OptionPortfolio:
     Empty class for now...'''
     
     def __init__(self):
-        pass
+        self.portfolio = []
 
-    def add_asset(self):
+    def add_asset(self, asset, trade_position):
+        #if trade_position = 'long':
+        
         pass
 
     def remove_asset(self):

@@ -1,6 +1,10 @@
 class OptionPortfolio:
-    def __init__(self, assetlist):
-        self.assetlist = assetlist
+    '''Main entry point for users?
+    
+    Empty class for now...'''
+    
+    def __init__(self):
+        pass
 
     def add_asset(self):
         pass
@@ -8,7 +12,6 @@ class OptionPortfolio:
     def remove_asset(self):
         pass
 
-    def calc_graph(self):
-        pass
+    
 
     

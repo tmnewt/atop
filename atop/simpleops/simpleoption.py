@@ -7,7 +7,7 @@ class SimpleOption:
     without having to worry about complex topics like volatility, actual
     probability, or time! This is only for educational purposes. '''
 
-    def __init__(self, stock_price, strike_price, up_price, down_price, up_payoff, down_payoff,  risk_free):
+    def __init__(self, stock_price, strike_price, up_price, down_price, up_payoff, down_payoff,  risk_free, trade_position = 'Long'):
         self.stock_price = stock_price
         self.strike_price = strike_price
         self.up_price = up_price
@@ -15,6 +15,7 @@ class SimpleOption:
         self.up_payoff = up_payoff
         self.down_payoff = down_payoff
         self.risk_free = risk_free
+        self.trade_position = trade_position
 
         self.hedge_ratio = self.hedge_calc()
         self.rf_units = self.rf_units_calc()

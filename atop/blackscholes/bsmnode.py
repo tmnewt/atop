@@ -17,13 +17,14 @@ class BsmNode:
     Currently does not support options where the underlying has intermediate cash
     flows such as a stock with a dividend payment. It will be implemented in the 
     future.'''
-    def __init__(self, op_type, underlying, strike, volatility, risk_free, time_in_years):
+    def __init__(self, op_type, underlying, strike, volatility, risk_free, time_in_years, trade_position = 'Long'):
         self.op_type = op_type
         self.underlying = underlying
         self.strike = strike
         self.volatility = volatility
         self.risk_free = risk_free
         self.time_in_years = time_in_years
+        self.trade_postion = trade_position  # by default is long. This does NOT affect calculations.
 
         # Internal Calculations.
         self.d1 = self.d1_calc()

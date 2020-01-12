@@ -98,6 +98,7 @@ class NPeriodBOPM:
         return payoffs
 
     def __price_calc(self):
+        # Special thanks to cantaro86 for posting his solution on github
         price_vector = self.payoff_vector
         # find prices
         for i in range(self.nperiods-1, -1, -1):

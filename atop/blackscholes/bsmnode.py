@@ -140,7 +140,8 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
 
 
 
-
+    def get_trade_position(self):
+        return self.trade_postion
 
 
 

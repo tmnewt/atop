@@ -1,18 +1,17 @@
+from atop.blackscholes.bsmnode import BsmNode
+
 class OptionPortfolio:
-    '''Main entry point for users?
-    
-    Empty class for now...'''
+    '''Main entry point for users?'''
     
     def __init__(self):
         self.portfolio = []
 
-    def add_asset(self, asset, trade_position):
-        #if trade_position = 'long':
+    def add_asset(self, asset):
+        self.portfolio.append(asset)
         
-        pass
 
-    def remove_asset(self):
-        pass
+    def remove_asset(self, asset):
+        self.portfolio.remove(asset)
 
     
 

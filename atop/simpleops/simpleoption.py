@@ -1,7 +1,7 @@
 class SimpleOption:
     '''Abstract class for a introducing 'simple' put and call option
 
-    Replaces part of the functionality of the BinomialOption class found 
+    Replicates part of the functionality of the BinomialOption class found 
     in the options directory. This class is newer and more simple to use. 
     Great for demonstrating single period binomial option pricing model 
     without having to worry about complex topics like volatility, actual

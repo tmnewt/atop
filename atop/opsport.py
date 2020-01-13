@@ -1,14 +1,18 @@
+from atop.blackscholes.bsmnode import BsmNode
+
 class OptionPortfolio:
-    def __init__(self, assetlist):
-        self.assetlist = assetlist
+    '''Main entry point for users?'''
+    
+    def __init__(self):
+        self.portfolio = []
 
-    def add_asset(self):
-        pass
+    def add_asset(self, asset):
+        self.portfolio.append(asset)
+        
 
-    def remove_asset(self):
-        pass
+    def remove_asset(self, asset):
+        self.portfolio.remove(asset)
 
-    def calc_graph(self):
-        pass
+    
 
     

@@ -70,7 +70,7 @@ All outputs are rounded to {rnd} decimal places. {hdsup} {overide_msg}\n'''.form
                                                                                 strike_p = round(self.strike_price, rounding),
                                                                                 up = round(self.up_price, rounding),
                                                                                 down = round(self.down_price, rounding),
-                                                                                rf = round(self.risk_free, 5)*100,
+                                                                                rf = round(self.risk_free, rounding),
                                                                                 rnd = rounding,
                                                                                 hdsup = headsup,
                                                                                 overide_msg = overide_message ))

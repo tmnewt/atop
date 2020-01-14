@@ -1,3 +1,7 @@
+# this code is outdated and should be ignored.
+# will be removed sometime in the future.
+
+
 from atop.options.binomialoption import BinomialOption
 
 class PutOption(BinomialOption):

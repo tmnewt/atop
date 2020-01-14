@@ -1,3 +1,7 @@
+# this code is outdated and should be ignored.
+# will be removed sometime in the future.
+
+
 class BinomialOption:
     
     def __init__(self, stock_price, strike_price, up_price, down_price, risk_free, up_payoff, down_payoff, overridden=False):

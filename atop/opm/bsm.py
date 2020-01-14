@@ -1,7 +1,7 @@
 from scipy.stats import norm
 from math import exp, log, sqrt
 
-class BsmNode:
+class BlackScholesOp:
     '''Data container for Black-Scholes-Merton calculations
     
     Given the type of option (Call or Put), the option's underlying asset price,

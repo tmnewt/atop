@@ -1,9 +1,10 @@
 # showcasing the classes
 
 from atop.options.calloption import CallOption 
-from atop.options.putoption import PutOption
 from atop.options.nperiodbopm import NPeriodBOPM
 from atop.blackscholes.bsmnode import BsmNode
+from atop.simpleops.simplecall import SimpleCall
+from atop.simpleops.simpleput import SimplePut
 
 # The CallOption and PutOption class handle single period options whose 
 # underlying values are known for the next time period. The options price 
@@ -77,3 +78,11 @@ print(two_period_put.get_price())
 # Observe:
 bsm_example = BsmNode('Call', 100, 110, 0.14247, 0.05, 1)
 print(bsm_example.price)
+
+# Back to the NPeriodBOPM:
+# We can also force it to behave like a single period binomial pricing tool!
+single_period_call = NPeriodBOPM('Call', 100, 110, 0.14247, 0.05, 1, 1)
+print(single_period_call.get_price())
+
+single_period_put = NPeriodBOPM('Put', 100, 110, 0.14247, 0.05, 1, 1)
+print(single_period_put.get_price())

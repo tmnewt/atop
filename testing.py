@@ -1,10 +1,10 @@
 # showcasing the classes
 
 from atop.options.calloption import CallOption 
-from atop.options.nperiodbopm import NPeriodBOPM
-from atop.blackscholes.bsmnode import BsmNode
-from atop.simpleops.simplecall import SimpleCall
-from atop.simpleops.simpleput import SimplePut
+
+from atop.opm.nperiodbopm import NPeriodBOPM
+from atop.opm.bsm import BlackScholesOp
+
 
 # The CallOption and PutOption class handle single period options whose 
 # underlying values are known for the next time period. The options price 
@@ -76,7 +76,7 @@ print(two_period_put.get_price())
 
 # that's pretty much the same answer given by the Black-Scholes-Merton model
 # Observe:
-bsm_example = BsmNode('Call', 100, 110, 0.14247, 0.05, 1)
+bsm_example = BlackScholesOp('Call', 100, 110, 0.14247, 0.05, 1)
 print(bsm_example.price)
 
 # Back to the NPeriodBOPM:

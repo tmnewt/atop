@@ -1,5 +1,3 @@
-# don't create a parent class here. There is nothing to be gained doing that.
-
 from scipy.stats import norm
 from math import exp, log, sqrt
 

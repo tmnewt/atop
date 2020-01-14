@@ -1,21 +1,5 @@
 class BinomialOption:
-    '''Creates a single-period two-state option object.
-        
-        Object calculates price (premium) of single-period option of an arbitrary time period
-        Requires current underlying stock price, strike price, price in up state,
-        price in down state, risk free rate.
-        
-        The risk free rate used should reflect the actual rate of interest earned during the time period.
-        For instance, if the option is for 6 months, enter the calculated interest rate earned in those 6 months.
-
-        By default, period payoffs for both up and down states are calculated internally.
-        User can override these calculated payoffs by passing their own values.
-        This is useful for calculating an 'inner' single period of a much larger multi-period option pricing model.
-        Consider that the payoffs are not the possible stock values at some arbitrary time before maturity but 
-        instead the price of the next binomial period option.
-
-        Dev note: This easily causes confusion, consider breaking apart this functionality.
-        '''
+    
     def __init__(self, stock_price, strike_price, up_price, down_price, risk_free, up_payoff, down_payoff, overridden=False):
         self.stock_price = stock_price
         self.strike_price = strike_price

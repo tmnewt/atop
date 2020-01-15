@@ -1,3 +1,5 @@
+from math import sqrt, log
+
 class SinglePeriodOption:
     '''Single Period Binomial Option object
 
@@ -30,10 +32,11 @@ class SinglePeriodOption:
         self.rf_units =      self.__rf_units_calc()
         self.value =         self.__value_calc()
         
-
-        #risk neutral probabilites. Technically, extra stuff
+        #Technically, extra stuff
+        #risk neutral probabilites. 
         self.up_risk_neutral_prob =     self.__up_risk_neutral_calc()
         self.down_risk_neutral_prob =   self.__dn_risk_neutral_calc()
+        self.volatility =               self.__volatility_calc()
 
 
 
@@ -74,6 +77,17 @@ class SinglePeriodOption:
     def __dn_risk_neutral_calc(self):
         return 1-self.up_risk_neutral_prob
     
+    def __up_factor(self):
+        return self.up_value/self.underlying_value
+
+    def __dn_factor(self):
+        return self.down_value/self.underlying_value
+    
+    def __volatility_calc(self):
+        holder = []
+        holder.append(1-sqrt(1+2*(self.risk_free-log(self.__up_factor()))))
+        holder.append(abs(1+sqrt(1+2*(self.risk_free-log(self.__dn_factor())))/-1))
+        return holder
     
     # 'poking' values and seeing how things change.
     def poke_underlying(self):
@@ -89,73 +103,75 @@ class SinglePeriodOption:
     def get_value(self):
         return self.value
 
-    def print_calc_values(self, 
+    
+    # Guide that walks through the pricing like its a homework problem.
+    def print_guide(self, 
                         rounding = 2, 
-                        hide_hedging_solution = False, 
-                        hide_proof = False, 
+                        hide_solution = False, 
                         ):
         
         # message about input values
         # Some visual padding
-        print('====================================')
-        print('  SINGLE PEIORD {} {} '.format(self.position, self.optype))
-        print('====================================')
+        print('=======================================')
+        print('  SINGLE PEIORD BINOMIAL {} {} '.format(
+            self.position, self.optype))
+        print('=======================================')
         
-        print('''The calculations below are for a single period {pos} {opt} 
-where the underlying value is {stock_p}, with a strike value of {strike_p}, 
-an up value of {up}, a down value of {down}, and a risk free rate of {rf}. 
-All outputs are rounded to {rnd} decimal places.'''.format(
+        print('''Given a single period {pos} {opt} where the underlying value
+is {stock_p}, with a strike value of {strike_p}, an up value of {up}, a down 
+value of {down}, and a risk free rate of {rf} what is the price of this option?
+
+Note: All display values are rounded to {rnd} decimal places. However, all
+calculations are precise. Negative values reflect selling (aka short) an asset.
+'''.format(
                             pos = self.position,
                             opt = self.optype,
-                            stock_p = round(self.underlying_value, rounding),
-                            strike_p = round(self.strike_value, rounding),
-                            up = round(self.up_value, rounding),
-                            down = round(self.down_value, rounding),
-                            rf = round(self.risk_free, rounding),
+                            stock_p = round(self.underlying_value, 2),
+                            strike_p = round(self.strike_value, 2),
+                            up = round(self.up_value, 2),
+                            down = round(self.down_value, 2),
+                            rf = round(self.risk_free, 3),
                             rnd = rounding)
                             )
         
         # Still in the print_calc_values function
         print('-------------------')
-        print('Calculated Outputs')
+        print('Pricing Solution')
         print('-------------------')
-        
+
         print('{} {} value: $ {}'.format(self.position, self.optype,
                 round(self.value, rounding))
                 )
-        print('Negative')
-        
-        if hide_hedge_ratio:
+         
+        if hide_solution:
             pass
         else:
-            print('Hedge Ratio (units of underlying): {}'.format(
-                round(self.hedge_ratio, rounding))
-                )
             
-
-        if hide_risk_free_units:
-            pass
-        else:
-            print('Value of bond position for hedging purposes: $ {}'.format(
-                round(self.rf_units, rounding))
-                )
-
-        if hide_state_payoffs:
-            pass
-        else:
             print('Up state payoff is {} and down state payoff is {}'.format(
                 round(self.up_payoff, rounding),
                 round(self.down_payoff, rounding))
                 )
+            
+            print('~~~~~~')
+            print('Proof')
+            print('~~~~~~')
+            print('Hedge Ratio (units of underlying): {}'.format(
+                round(self.hedge_ratio, rounding))
+                )
+            
+            print('Value of bond position for hedging purposes: $ {}'.format(
+                round(self.rf_units, rounding))
+                )
 
-        if hide_risk_neutral_probabilites:
-            pass
-        else: 
+            
+
+        
+        
             print('Risk-neutral probability for up state is {}'.format(
                 round(self.up_risk_neutral_prob, rounding)))
-            print('Calculated risk-neutral probability for down state is {}'.format(
+            print('Risk-neutral probability for down state is {}'.format(
                 round(self.down_risk_neutral_prob, rounding)))
-        print('________________________________________________________________________________________________________\n')
+        print('____________________________________________________________\n')
 
 
 
@@ -163,8 +179,8 @@ All outputs are rounded to {rnd} decimal places.'''.format(
     
 
 #test   
-#example = SinglePeriodOption('Long','Call', 100, 110, 120, 90.25, 0.05)
-#print(example.value)
+example = SinglePeriodOption('Long','Call', 100, 110, 120, 90.25, 0.05)
+print(example.value)
 #example = SinglePeriodOption('Short','Call', 100, 110, 120, 90.25, 0.05)
 #print(example.value)
 #example = SinglePeriodOption('Long','Put', 100, 110, 120, 90.25, 0.05)
@@ -172,4 +188,7 @@ All outputs are rounded to {rnd} decimal places.'''.format(
 #example = SinglePeriodOption('Short','Put', 100, 110, 120, 90.25, 0.05)
 #print(example.value)
 # cool, it works.
+
+#additional tests.
+print(example.volatility)
     

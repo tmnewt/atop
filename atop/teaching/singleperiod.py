@@ -120,9 +120,120 @@ class SinglePeriodOption:
     
     def get_value(self):
         return self.value
-
-        
     
+
+    # generates a complete solution with choices to display certain information.
+    def solution(self, rounding = 2, skip_problem_display = False,
+                hide_additional = False):
+        
+        pos=          self.position
+        opt=          self.optype
+        name=         self.underlying_name
+        under=  round(self.underlying_value, 2)
+        strike= round(self.strike_value, 2)
+        up=     round(self.up_value, 2)
+        down=   round(self.down_value, 2)
+        rf=     round(self.risk_free, 2)
+        
+
+        # message about input values
+        print(f'object input: SinglePeriodOption({pos}, {opt}, {under}, {strike}, {up}, {down}, {rf}, {name})')
+        if skip_problem_display:
+            print(f'{pos} {opt} value: $ {self.value}')
+            
+        else:
+            # Some visual padding
+            print('=======================================')
+            print(f'''  SINGLE PEIORD BINOMIAL {pos} {opt} ''')
+            print('=======================================')
+
+            print(f'''\n   Given:
+    A single period {pos} {opt} on the asset {name} whose current price is ${under}, with a 
+    strike value of ${strike}. We know for certain  {name}\'s price will either be ${up}, 
+    or ${down}, next period. The current risk-free rate is {rf}
+
+    What is the fair price for this {pos} {opt}?''')
+                            
+                            
+        
+        # Still in the print_calc_values function
+            print('-------------------')
+            print(f'Answer: {pos} {opt} value: $ {self.value}')
+            print('-------------------')
+            
+
+            if hide_additional:
+                pass
+            else:
+                print('Problem\'s up factor: {}'.format(self.__up_factor()))
+                print('Problem\'s down factor: {}'.format(self.__dn_factor()))
+                print('Hedge Ratio (a.k.a units of underlying): {}'.format(
+                        round(self.hedge_ratio, rounding)))
+                print('Value of bond position for hedging purposes: $ {}'.format(
+                        round(self.rf_units, rounding)))
+                print('Risk-neutral probability for up state is {}'.format(
+                        round(self.up_risk_neutral_prob, rounding)))
+                print('Risk-neutral probability for down state is {}'.format(
+                        round(self.down_risk_neutral_prob, rounding)))
+        print('____________________________________________________________\n')
+
+            
+            
+    def guide(self):
+        print('''Remember: all options are contractual agreements between two parties who are legally bound
+to perform as specified by their agreement. So think of the word \'Option\' as the same thing as
+'contract'. Further, these contracts are standardized with universal well defined and understood 
+clauses and language which allows the agreements to be easily transferred to others (third-parties) 
+without loss of contractual duty or value. Lastly, remember all options derive their value from the 
+performance of the underlying asset over the life of the contract.
+
+The two parties to these contracts are a BUYER (a.k.a going LONG) of the contract who pays a price 
+(a.k.a. a premium) and on the other side is the party WRITING the option (a.k.a the SELLER, a.k.a shorting) 
+who collects the premium the buyer paid. The contract is formed with the buyer purchasing certain 
+contractual rights for which the seller is contractually obligated to fullfill.
+
+As you will see this contract describes a zero-sum transaction. The gains of one party are the losses of the 
+other party. 
+
+One note:
+This guide uses the terms \'price\' and \'value\' interchangablely. They are the same thing. 
+Additionally, you might see the program produce negative currency values. For instance,
+you may see the calculated value for a short call be, say, -2.50. Which seems weird. 
+How can a price be negative? This is simply an accounting style chosen to give logical 
+consistency to the transactions. This is important for correctly describing replicating 
+portfolios. It is centered around the perspective of the buyer who pays a physical x 
+amount of money, thus a positive cash outflow. Conversely the seller earns the premium x
+in the form of a negative outflow (which translates to a cash inflow). It's not an actual negative value. 
+    ''')
+        print('Recall that this a {} option'.format(self.optype))
+        self.__print_helper()
+        
+        print('First, find the payoffs in the up and down state:')
+        print('For the up payoff: up_value - underlying')
+        print('        up payoff: {}'.format(
+                            self.up_payoff))
+        print('')
+        print('Up state payoff is {} and down state payoff is {}'.format(
+            round(self.up_payoff, 2),
+            round(self.down_payoff, 2))
+            )
+        
+        print('~~~~~~')
+        print('Proof')
+        print('~~~~~~')
+        
+        
+        
+        # Insane Sanity check
+        
+        print('\n Sanity Check')
+        print(self.volatility)
+        print('Up factor: {}'.format(self.__sanity_check(self.volatility[0])[0]))
+        print('Up factor: {}'.format(self.__sanity_check(self.volatility[1])[0]))
+        print('Dn factor: {}'.format(self.__sanity_check(self.volatility[2])[1]))
+        print('Dn factor: {}'.format(self.__sanity_check(self.volatility[3])[1]))
+        print('____________________________________________________________\n')
+
     def __print_helper(self): #helper func for guide()
         if self.optype == 'Long':
             print('Going long means purchasing the {} option'.format(
@@ -155,104 +266,6 @@ class SinglePeriodOption:
 
         else:
             print('Shorting means selling the option (a.k.a writing an option)')
-    
-    
-
-    # Guide that walks through the pricing like its a homework problem.
-    def guide(self, rounding = 2, hide_solution = False):
-        
-        # message about input values
-        # Some visual padding
-        print('=======================================')
-        print('  SINGLE PEIORD BINOMIAL {} {} '.format(
-            self.position, self.optype))
-        print('=======================================')
-        
-        print('''Given a single period {pos} {opt} where the underlying value
-is {stock_p}, with a strike value of {strike_p}, an up value of {up}, a down 
-value of {down}, and a risk free rate of {rf} what is the price of this option?
-
-Note: All display values are rounded to {rnd} decimal places. However, all
-calculations are precise.
-'''.format(
-                            pos = self.position,
-                            opt = self.optype,
-                            stock_p = round(self.underlying_value, 2),
-                            strike_p = round(self.strike_value, 2),
-                            up = round(self.up_value, 2),
-                            down = round(self.down_value, 2),
-                            rf = round(self.risk_free, 3),
-                            rnd = rounding)
-                            )
-        
-        # Still in the print_calc_values function
-        print('-------------------')
-        print('Pricing Solution')
-        print('-------------------')
-
-        print('{} {} value: $ {}'.format(self.position, self.optype,
-                round(self.value, rounding))
-                )
-        
-        if hide_solution:
-            pass
-        else:
-            print('''Remember: all options are agreements between two parties who are legally bound
-to perform as specified by their agreement. So think of the word \'Option\' as the same thing as
-'contract'. Further, these contracts are standardized with well defined and agreed upon clauses 
-and language. Therefor the agreements can easily be transferred to others (third-parties) with (tradeable).
-
-The two parties to this contract One side is the buyer of the option and on the other
-side is the person writing the option (a.k.a the seller).
-    ''')
-            print('Recall that this a {} option'.format(self.optype))
-            self.__print_helper()
-            
-            print('First, find the payoffs in the up and down state:')
-            print('For the up payoff: up_value - underlying')
-            print('        up payoff: {}'.format(
-                                self.up_payoff))
-            print('')
-            print('Up state payoff is {} and down state payoff is {}'.format(
-                round(self.up_payoff, rounding),
-                round(self.down_payoff, rounding))
-                )
-            
-            print('~~~~~~')
-            print('Proof')
-            print('~~~~~~')
-            print('Hedge Ratio (a.k.a units of underlying): {}'.format(
-                round(self.hedge_ratio, rounding))
-                )
-            
-            print('Value of bond position for hedging purposes: $ {}'.format(
-                round(self.rf_units, rounding))
-                )
-
-        
-            print('Risk-neutral probability for up state is {}'.format(
-                round(self.up_risk_neutral_prob, rounding)))
-            print('Risk-neutral probability for down state is {}'.format(
-                round(self.down_risk_neutral_prob, rounding)))
-
-            print('Problem\'s up factor: {}'.format(self.__up_factor()))
-            print('Problem\'s down factor: {}'.format(self.__dn_factor()))
-            
-            
-            # Insane Sanity check
-            
-            print('\n Sanity Check')
-
-            print(self.volatility)
-
-            print('Up factor: {}'.format(self.__sanity_check(self.volatility[0])[0]))
-            print('Up factor: {}'.format(self.__sanity_check(self.volatility[1])[0]))
-            print('Dn factor: {}'.format(self.__sanity_check(self.volatility[2])[1]))
-            print('Dn factor: {}'.format(self.__sanity_check(self.volatility[3])[1]))
-        print('____________________________________________________________\n')
-
-
-
 
     
 
@@ -269,5 +282,5 @@ side is the person writing the option (a.k.a the seller).
 
 #additional tests.
 example = SinglePeriodOption('Short','Call', 95, 110, 120, 90.25, 0.05)
-example.guide()
+example.solution()
     

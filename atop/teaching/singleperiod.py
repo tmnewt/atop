@@ -9,13 +9,14 @@ class SinglePeriodOption:
     without having to worry about complex topics like volatility, actual
     probability, or time! This is only for educational purposes. '''
 
-    def __init__(self, position: str, optype: str, 
+    def __init__(self, position: str, optype: str, underlying_name: str,
                     underlying_value: int or float,
                     strike_value: int or float, up_value: int or float,
                     down_value: int or float, risk_free: int or float):
         self.position =         position    
         self.optype =           optype
         self.underlying_value = underlying_value
+        self.udnerlying_name
         self.strike_value =     strike_value
         self.up_value =         up_value
         self.down_value =       down_value
@@ -37,7 +38,6 @@ class SinglePeriodOption:
         self.up_risk_neutral_prob =     self.__up_risk_neutral_calc()
         self.down_risk_neutral_prob =   self.__dn_risk_neutral_calc()
         self.volatility =               self.__volatility_calc()
-
 
 
     def __position_effect_calc(self):
@@ -88,11 +88,11 @@ class SinglePeriodOption:
         box.append(1-sqrt(1+2*(self.risk_free-log(self.__up_factor())))) #works
         box.append(1+sqrt(1+2*(self.risk_free-log(self.__up_factor())))) #works...
         
-        box.append( sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value)) -1)
-        box.append(abs(1+sqrt(1+2*(self.risk_free-log(self.__dn_factor())))/-1)) # produces the exact same value as prior line
+        box.append(abs(1+sqrt(1+2*(self.risk_free-log(self.__dn_factor())))/-1)) 
+        # prior is equivalent to: sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value))-1
         
-        box.append((1+sqrt(1+2*(self.risk_free-log(self.__dn_factor()))))/-1) # produces the exact same value as prior line
-        # prior equivalent to -sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value)) -1)
+        box.append((1+sqrt(1+2*(self.risk_free-log(self.__dn_factor()))))/-1) 
+        # prior equivalent to: -sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value))-1
         # which is a slightly different approach.
         return box
     
@@ -115,12 +115,36 @@ class SinglePeriodOption:
     def get_value(self):
         return self.value
 
+        
     
+    def __print_helper_position(self): #helper func for guide()
+        if self.optype == 'Long':
+            print('Going long means purchasing the {} option'.format(
+                self.position))
+            if self.optype == 'Call':
+                print('''   Buying a call gives you the RIGHT to PURCHASE the underlying asset {name} (which is currently trading 
+    at ${under}) FOR the strike price of ${strike}. This means if {name} moves higher than the strike price {strike} then the 
+    value (that is, the price) of this call option increases. So, when {name} price > $ {strike} then this call is worth more!
+
+
+    
+    But if the underlying asset you have NO OBLIGATION to exercise 
+    this right if the underlying < strike. This means you have 
+    unlimited upside and limited downside.''')
+
+            else:
+                print('''   Buying a put gives you the RIGHT to SELL the underlying asset at
+    the strike price. But you have NO OBLIGATION to exercise 
+    this right if the underlying > strike. This means you have 
+    unlimited upside and limited downside.''')
+
+        else:
+            print('Shorting means selling the option (a.k.a writing an option)')
+    
+    
+
     # Guide that walks through the pricing like its a homework problem.
-    def guide(self, 
-                        rounding = 2, 
-                        hide_solution = False, 
-                        ):
+    def guide(self, rounding = 2, hide_solution = False):
         
         # message about input values
         # Some visual padding
@@ -154,11 +178,21 @@ calculations are precise. Negative values reflect selling (aka short) an asset.
         print('{} {} value: $ {}'.format(self.position, self.optype,
                 round(self.value, rounding))
                 )
-         
+        
         if hide_solution:
             pass
         else:
+            print('''   Remember: all options are contracts between two parties,
+    One side is the buyer of the option and on the other
+    side is the person writing the option (a.k.a the seller)''')
+            self.__print_helper_position()
+            print('Recall that this a {} option'.format(self.optype))
             
+            print('First, find the payoffs in the up and down state:')
+            print('For the up payoff: up_value - underlying')
+            print('        up payoff: {}'.format(
+                                self.up_payoff))
+            print('')
             print('Up state payoff is {} and down state payoff is {}'.format(
                 round(self.up_payoff, rounding),
                 round(self.down_payoff, rounding))
@@ -175,9 +209,6 @@ calculations are precise. Negative values reflect selling (aka short) an asset.
                 round(self.rf_units, rounding))
                 )
 
-            
-
-        
         
             print('Risk-neutral probability for up state is {}'.format(
                 round(self.up_risk_neutral_prob, rounding)))
@@ -198,7 +229,6 @@ calculations are precise. Negative values reflect selling (aka short) an asset.
             print('Up factor: {}'.format(self.__sanity_check(self.volatility[1])[0]))
             print('Dn factor: {}'.format(self.__sanity_check(self.volatility[2])[1]))
             print('Dn factor: {}'.format(self.__sanity_check(self.volatility[3])[1]))
-            print('Dn factor: {}'.format(self.__sanity_check(self.volatility[4])[1]))
         print('____________________________________________________________\n')
 
 

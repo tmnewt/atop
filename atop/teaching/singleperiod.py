@@ -209,7 +209,7 @@ class SinglePeriodOption:
             print(f'Remember: going long simply means purchasing the option on {name}.')
             if self.optype == 'Call':
                 print(f'''\nBuying a Call gives you the RIGHT but NO OBLIGATION to buy the underlying
-asset ({name}) for the strike price of ${strike}. ({name}'s value is currently trading at ${under})
+asset ({name}) for the strike price of ${strike}. ({name}'s value is currently trading at ${under:<40})
 
 These facts are important for 2 reasons for a long call contract:
 First, because this contract gives you the RIGHT to purchase {name} at ${strike}, when
@@ -266,10 +266,11 @@ What this all means is there is potential for huge upside if {name}\'s is higher
         print('Dn factor: {}'.format(self.__sanity_check(self.volatility[3])[1]))
         print('____________________________________________________________\n')
 
-
+                                                                                #
     def __intro_guide(self):
-        intro_text = '''Remember: all options are contractual agreements between two parties who are legally bound
-to perform as specified by their agreement. So think of the word `Option` as the same thing as
+        intro_text = '''
+Remember: all options are contractual agreements between two parties who are legally 
+bound to perform as specified by their agreement. So think of the word `Option` as the same thing as
 `contract`. Further, these contracts are standardized with universal well defined and understood 
 clauses and language which allows the agreements to be easily transferred to others (third-parties) 
 without loss of contractual duty or value. Lastly, remember all options derive their value from the 
@@ -292,14 +293,11 @@ consistency to the transactions. This is important for correctly describing repl
 portfolios. It is centered around the perspective of the buyer who pays a physical x 
 amount of money, thus a positive cash outflow. Conversely the seller earns the premium x
 in the form of a negative outflow (which translates to a cash inflow).'''
-        #pprint.pprint(intro_text)
-        #print(type(intro_text))
-        #test = intro_text.split('\n')
-        #print(test)
-        #temp_string = ''.join(test)
-        #print(temp_string)
-        #print(type(temp_string))
+        
+
+        print(intro_text)
         print(f'{intro_text:<80}')
+        print(intro_text.replace('\n',''), )
         #return intro_text
 
 #test   
@@ -314,6 +312,6 @@ in the form of a negative outflow (which translates to a cash inflow).'''
 # cool, it works.
 
 #additional tests.
-example = SinglePeriodOption('Long','Call', 95.54, 107.89, 120.02, 90.25, 0.0342, 'TMNQQC')
-example.guide()
+#example = SinglePeriodOption('Long','Call', 95.54, 107.89, 120.02, 90.25, 0.0342, 'TMNQQC')
+#example.guide()
     

@@ -1,4 +1,4 @@
-from math import sqrt, log
+from math import sqrt, log, exp
 
 class SinglePeriodOption:
     '''Single Period Binomial Option object
@@ -79,16 +79,28 @@ class SinglePeriodOption:
     
     def __up_factor(self):
         return self.up_value/self.underlying_value
-
+    
     def __dn_factor(self):
         return self.down_value/self.underlying_value
     
     def __volatility_calc(self):
-        holder = []
-        holder.append(1-sqrt(1+2*(self.risk_free-log(self.__up_factor()))))
-        holder.append(abs(1+sqrt(1+2*(self.risk_free-log(self.__dn_factor())))/-1))
-        return holder
+        box = []
+        box.append(1-sqrt(1+2*(self.risk_free-log(self.__up_factor())))) #works
+        box.append(1+sqrt(1+2*(self.risk_free-log(self.__up_factor())))) #works...
+        
+        box.append( sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value)) -1)
+        box.append(abs(1+sqrt(1+2*(self.risk_free-log(self.__dn_factor())))/-1)) # produces the exact same value as prior line
+        
+        box.append((1+sqrt(1+2*(self.risk_free-log(self.__dn_factor()))))/-1) # produces the exact same value as prior line
+        # prior equivalent to -sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value)) -1)
+        # which is a slightly different approach.
+        return box
     
+    def __sanity_check(self, sigma):
+        upf = exp(self.risk_free - (sigma**2 / 2) + sigma)
+        dnf = exp(self.risk_free - (sigma**2 / 2) - sigma)
+        return [upf, dnf]
+
     # 'poking' values and seeing how things change.
     def poke_underlying(self):
         return NotImplemented
@@ -105,7 +117,7 @@ class SinglePeriodOption:
 
     
     # Guide that walks through the pricing like its a homework problem.
-    def print_guide(self, 
+    def guide(self, 
                         rounding = 2, 
                         hide_solution = False, 
                         ):
@@ -155,7 +167,7 @@ calculations are precise. Negative values reflect selling (aka short) an asset.
             print('~~~~~~')
             print('Proof')
             print('~~~~~~')
-            print('Hedge Ratio (units of underlying): {}'.format(
+            print('Hedge Ratio (a.k.a units of underlying): {}'.format(
                 round(self.hedge_ratio, rounding))
                 )
             
@@ -171,6 +183,22 @@ calculations are precise. Negative values reflect selling (aka short) an asset.
                 round(self.up_risk_neutral_prob, rounding)))
             print('Risk-neutral probability for down state is {}'.format(
                 round(self.down_risk_neutral_prob, rounding)))
+
+            print('Problem\'s up factor: {}'.format(self.__up_factor()))
+            print('Problem\'s down factor: {}'.format(self.__dn_factor()))
+            
+            
+            # Insane Sanity check
+            
+            print('\n Sanity Check')
+
+            print(self.volatility)
+
+            print('Up factor: {}'.format(self.__sanity_check(self.volatility[0])[0]))
+            print('Up factor: {}'.format(self.__sanity_check(self.volatility[1])[0]))
+            print('Dn factor: {}'.format(self.__sanity_check(self.volatility[2])[1]))
+            print('Dn factor: {}'.format(self.__sanity_check(self.volatility[3])[1]))
+            print('Dn factor: {}'.format(self.__sanity_check(self.volatility[4])[1]))
         print('____________________________________________________________\n')
 
 
@@ -179,8 +207,8 @@ calculations are precise. Negative values reflect selling (aka short) an asset.
     
 
 #test   
-example = SinglePeriodOption('Long','Call', 100, 110, 120, 90.25, 0.05)
-print(example.value)
+#example = SinglePeriodOption('Long','Call', 100, 110, 120, 90.25, 0.05)
+#print(example.value)
 #example = SinglePeriodOption('Short','Call', 100, 110, 120, 90.25, 0.05)
 #print(example.value)
 #example = SinglePeriodOption('Long','Put', 100, 110, 120, 90.25, 0.05)
@@ -190,5 +218,6 @@ print(example.value)
 # cool, it works.
 
 #additional tests.
-print(example.volatility)
+example = SinglePeriodOption('Short','Call', 95, 110, 120, 90.25, 0.05)
+example.guide()
     

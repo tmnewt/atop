@@ -48,7 +48,7 @@ class BinomialOption:
         # message about input values
         # Some visual padding
         print('===============================================================================')
-        print('  INFORMATION FOR A SINGLE PEIORD {} OPTION USING BINOMIAL PRICING METHOD'.format(self))
+        print('  INFORMATION FOR A SINGLE PERIOD {} OPTION USING BINOMIAL PRICING METHOD'.format(self))
         print('===============================================================================')
         
         print('''\nThe calculations below are for a single period {op_type} option where the underlying value is {stock_p}, 

@@ -1,5 +1,5 @@
 from math import sqrt, log, exp
-import pprint
+
 
 class SinglePeriodOption:
     '''Single Period Binomial Option object
@@ -145,30 +145,28 @@ class SinglePeriodOption:
             
         else:
             # Some visual padding
-            print('=======================================')
-            print(f'''  SINGLE PEIORD BINOMIAL {pos} {opt} ''')
+            print('\n=======================================')
+            print(f'''  SINGLE PERIOD BINOMIAL {pos} {opt} ''')
             print('=======================================')
 
-            print(f'''\n   Given:
+            print(f'''\nGiven:
     A single period {pos} {opt} on the asset {name} whose current price is ${under}, with a 
     strike value of ${strike}. We know for certain  {name}\'s price will either be ${up}, 
     or ${down}, next period. The current risk-free rate is {rf}
 
-    What is the fair price for this {pos} {opt}?''')
-                            
-                            
+What is the fair price for this {pos} {opt}?''')                            
         
-        # Still in the print_calc_values function
-            print('-------------------')
-            print(f'Answer: {pos} {opt} value: $ {round(self.value,4)}')
-            print('-------------------')
+        # Still in the solution function
+            print('\n--------------------------------------')
+            print(f'  Answer: {pos} {opt}\'s value: $ {round(self.value,4)}')
+            print('--------------------------------------')
             
 
             if hide_additional:
                 pass
             else:
-                print('Intermediate calculation answers:')
-                print(f'Problem\'s up factor: {round(self.__up_factor(),4)}')
+                print('\nIntermediate calculation answers:')
+                print(f'\nProblem\'s up factor: {round(self.__up_factor(),4)}')
                 print(f'Problem\'s down factor: {round(self.__up_factor(),4)}')
                 print(f'Hedge Ratio (a.k.a units of underlying): {round(self.hedge_ratio,4)}')
                 print(f'Value of bond position for hedging purposes: $ {round(self.rf_units,4)}')
@@ -209,7 +207,8 @@ class SinglePeriodOption:
             print(f'Remember: going long simply means purchasing the option on {name}.')
             if self.optype == 'Call':
                 print(f'''\nBuying a Call gives you the RIGHT but NO OBLIGATION to buy the underlying
-asset ({name}) for the strike price of ${strike}. ({name}'s value is currently trading at ${under:<40})
+asset ({name}) for the strike price of ${strike}. 
+{name}\'s value is currently trading at ${under}
 
 These facts are important for 2 reasons for a long call contract:
 First, because this contract gives you the RIGHT to purchase {name} at ${strike}, when
@@ -242,31 +241,25 @@ What this all means is there is potential for huge upside if {name}\'s is higher
         
         print('First, find the payoffs in the up and down state:')
         print('For the up payoff: up_value - underlying')
-        print('        up payoff: {}'.format(
-                            self.up_payoff))
+        print(f'        up payoff: {up}')
         print('')
         print('Up state payoff is {} and down state payoff is {}'.format(
             round(self.up_payoff, 2),
             round(self.down_payoff, 2))
             )
-        
-        print('~~~~~~')
-        print('Proof')
-        print('~~~~~~')
-        
-        
+        print('finish later...')
         
         # Insane Sanity check
         
-        print('\n Sanity Check')
-        print(self.volatility)
-        print('Up factor: {}'.format(self.__sanity_check(self.volatility[0])[0]))
-        print('Up factor: {}'.format(self.__sanity_check(self.volatility[1])[0]))
-        print('Dn factor: {}'.format(self.__sanity_check(self.volatility[2])[1]))
-        print('Dn factor: {}'.format(self.__sanity_check(self.volatility[3])[1]))
-        print('____________________________________________________________\n')
+        #print('\n Sanity Check')
+        #print(self.volatility)
+        #print('Up factor: {}'.format(self.__sanity_check(self.volatility[0])[0]))
+        #print('Up factor: {}'.format(self.__sanity_check(self.volatility[1])[0]))
+        #print('Dn factor: {}'.format(self.__sanity_check(self.volatility[2])[1]))
+        #print('Dn factor: {}'.format(self.__sanity_check(self.volatility[3])[1]))
+        #print('____________________________________________________________\n')
 
-                                                                                #
+
     def __intro_guide(self):
         intro_text = '''
 Remember: all options are contractual agreements between two parties who are legally 
@@ -295,9 +288,8 @@ amount of money, thus a positive cash outflow. Conversely the seller earns the p
 in the form of a negative outflow (which translates to a cash inflow).'''
         
 
-        print(intro_text)
+        #print(intro_text)
         print(f'{intro_text:<80}')
-        print(intro_text.replace('\n',''), )
         #return intro_text
 
 #test   

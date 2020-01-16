@@ -139,7 +139,7 @@ class SinglePeriodOption:
         
 
         # message about input values
-        print(f'argument input: SinglePeriodOption({pos}, {opt}, {under}, {strike}, {up}, {down}, {rf}, {name})')
+        print(f'>>> SinglePeriodOption({pos}, {opt}, {under}, {strike}, {up}, {down}, {rf}, {name})')
         if skip_problem_display:
             print(f'{pos} {opt} value: $ {round(self.value,4)}')
             

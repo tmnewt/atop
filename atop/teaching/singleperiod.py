@@ -9,18 +9,19 @@ class SinglePeriodOption:
     without having to worry about complex topics like volatility, actual
     probability, or time! This is only for educational purposes. '''
 
-    def __init__(self, position: str, optype: str, underlying_name: str,
+    def __init__(self, position: str, optype: str,
                     underlying_value: int or float,
                     strike_value: int or float, up_value: int or float,
-                    down_value: int or float, risk_free: int or float):
+                    down_value: int or float, risk_free: int or float,
+                    underlying_name = 'YBM'):
         self.position =         position    
         self.optype =           optype
         self.underlying_value = underlying_value
-        self.udnerlying_name
         self.strike_value =     strike_value
         self.up_value =         up_value
         self.down_value =       down_value
         self.risk_free =        risk_free
+       
         
         
         # internal calculations
@@ -38,6 +39,11 @@ class SinglePeriodOption:
         self.up_risk_neutral_prob =     self.__up_risk_neutral_calc()
         self.down_risk_neutral_prob =   self.__dn_risk_neutral_calc()
         self.volatility =               self.__volatility_calc()
+
+
+        # underlying name is optional. Used in the guide
+        # Defaults to 'YBM' (Your Beloved Machine)...
+        self.underlying_name = underlying_name
 
 
     def __position_effect_calc(self):
@@ -117,20 +123,29 @@ class SinglePeriodOption:
 
         
     
-    def __print_helper_position(self): #helper func for guide()
+    def __print_helper(self): #helper func for guide()
         if self.optype == 'Long':
             print('Going long means purchasing the {} option'.format(
                 self.position))
             if self.optype == 'Call':
-                print('''   Buying a call gives you the RIGHT to PURCHASE the underlying asset {name} (which is currently trading 
-    at ${under}) FOR the strike price of ${strike}. This means if {name} moves higher than the strike price {strike} then the 
-    value (that is, the price) of this call option increases. So, when {name} price > $ {strike} then this call is worth more!
+                print('''   Buying a call gives you the RIGHT but NO OBLIGATION to PURCHASE the underlying
+    asset {name} FOR the strike price of ${strike} ({name}'s value is currently trading at ${under})
 
+    These facts are important for 2 reasons for a long call contract:
+    First, because this contract gives you the RIGHT to purchase {name} at ${strike}, if 
+    {name} moves higher than the strike price of ${strike} then the value of this call 
+    option (that is, its price) increases. So, when {name}\'s price > ${strike} 
+    then this contract becomes more valuable! If contract matures with {name}\'s price > ${strike}
+    then the value of the contract is the difference in {name}\'s price - strike.
 
+    Second, because this contract requires NO OBLIGATION on your part to buy {name} at ${strike}, 
+    if {name}\'s price remains lower than the strike price of ${strike} then you 
+    are free to walk away. So, while {name}\'s price < ${strike} then this contract 
+    becomes worth less and less. If 
     
-    But if the underlying asset you have NO OBLIGATION to exercise 
-    this right if the underlying < strike. This means you have 
-    unlimited upside and limited downside.''')
+    These feature are what makes call options special.
+    What this all means is there is potential for huge upside if {name}\'s is higher than
+    ''')
 
             else:
                 print('''   Buying a put gives you the RIGHT to SELL the underlying asset at
@@ -158,7 +173,7 @@ is {stock_p}, with a strike value of {strike_p}, an up value of {up}, a down
 value of {down}, and a risk free rate of {rf} what is the price of this option?
 
 Note: All display values are rounded to {rnd} decimal places. However, all
-calculations are precise. Negative values reflect selling (aka short) an asset.
+calculations are precise.
 '''.format(
                             pos = self.position,
                             opt = self.optype,
@@ -182,11 +197,16 @@ calculations are precise. Negative values reflect selling (aka short) an asset.
         if hide_solution:
             pass
         else:
-            print('''   Remember: all options are contracts between two parties,
-    One side is the buyer of the option and on the other
-    side is the person writing the option (a.k.a the seller)''')
-            self.__print_helper_position()
+            print('''Remember: all options are agreements between two parties who are legally bound
+to perform as specified by their agreement. So think of the word \'Option\' as the same thing as
+'contract'. Further, these contracts are standardized with well defined and agreed upon clauses 
+and language. Therefor the agreements can easily be transferred to others (third-parties) with (tradeable).
+
+The two parties to this contract One side is the buyer of the option and on the other
+side is the person writing the option (a.k.a the seller).
+    ''')
             print('Recall that this a {} option'.format(self.optype))
+            self.__print_helper()
             
             print('First, find the payoffs in the up and down state:')
             print('For the up payoff: up_value - underlying')

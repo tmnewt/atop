@@ -153,7 +153,7 @@ class SinglePeriodOption:
     strike value of ${strike}. We know for certain  {name}\'s price will either be ${up}, 
     or ${down}, next period. The current risk-free rate is {rf}
 
-What is the fair price for this {pos} {opt}?''')                            
+What is the fair price for this {pos} {opt} today?''')                            
         
         # Still in the solution function
             print('\n--------------------------------------')
@@ -179,7 +179,7 @@ What is the fair price for this {pos} {opt}?''')
 
     # ahhhhhhhh this complete guide is taking forever to finish!
     # I hate strings...
-    def guide(self, hide_intro = False):
+    def guide(self, hide_what_is_an_option = False):
 
         # common values. Makes it easier to write guide.
         pos=          self.position
@@ -195,10 +195,40 @@ What is the fair price for this {pos} {opt}?''')
         print('\n=======================================================')
         print(f'   Guide to finding price for {pos} {opt} on {name}')
         print('=======================================================')
-        if hide_intro:
+        print(f'''{self.__guide_meta()}
+
+WARNING: all versions of this guide are still being worked on.
+
+ ----------
+   Intro  
+ ----------
+This guide aims to provide users with a complete walkthrough of calculating 
+ the fair price (today's price) for a single period binomial option. It's 
+ aimed at those looking for a deep dive into the subject of options. This 
+ guide goes all in, meticulously walking through every step of the process
+ guiding the user to the solution. At times it can come accross as
+ handholding and repetitive. But I argue that this is necessary as there are
+ too many concepts and values to keep track. Sometimes we just need an 
+ organized and thorough method of logically walking through problems.
+
+This guide uses the terms `price` and `value` interchangablely. They are the 
+ same thing. Additionally, you might see the program produce negative currency
+ values. For instance, you may see the calculated value for a short call be,
+ say, $ -2.50. Which seems weird. How can a price be negative? This is simply 
+ an accounting style chosen to give logical consistency to the transactions. 
+ It will become important later...''')
+ 
+ #is important for correctly describing replicating portfolios. It comes from 
+ #the perspective of the buyer who pays a physical x amount of money, which is
+ #a positive cash outflow. Conversely the seller earns the premium x in the 
+ #form of a negative outflow (which translates to a cash inflow). Don't 
+ #worry if that sounds confusing now. 
+ 
+
+        if hide_what_is_an_option:
             pass
         else:
-            self.__intro_guide()
+            self.__whatare_guide()
         print('\n******************')
         print(f'  Walkthrough')
         print('******************')
@@ -232,13 +262,17 @@ We are buying an option on {name}.''')
                 #String chunk for if call.
                 print(f'''
 Buying a Call gives you the RIGHT but NOT AN OBLIGATION to buy the underlying
- asset ({name}) for the strike price of ${strike}. {name}\'s value is 
- currently trading at ${under}.
+ asset ({name}) for the strike price of ${strike} upon exercising the option. 
+ {name}\'s value is currently trading at ${under}.
 
-These facts are important for 2 reasons for a long call contract:
-First, because you have the RIGHT to purchase {name} at ${strike}, if {name} 
- moves higher than the contract's strike  price of ${strike} then the value 
- of this call option (that is, its price) increases. To restate, when 
+These facts are important for 2 reasons for a long call option:
+ First, because you have the RIGHT to purchase {name} at ${strike}, if {name} 
+ moves higher than the contract's strike price of ${strike} then the value 
+ of this call option (that is, its price) increases. Suppose {name}\'s value
+ rises from {under} to {up}. If you owned this call option, upon exercising it,
+ you get to buy {name} at {strike}. You could turn around and sell it at the
+ current market price of {up} and walk away with a payoff of ${up-strike:.2f}.
+ To reiterate, when 
  {name}\'s price > ${strike} this contract becomes more valuable! If the 
  contract matures and {name}\'s price > ${strike} then the value of the 
  contract is the difference in {name}\'s price - strike.
@@ -264,14 +298,23 @@ Which translates to:
 {self.__payoff_guide_helper()}
 
 
-''')
+
+Long Call guide not finished''')
 
             else: # must be a put
-                print('''
-Buying a put gives you the RIGHT to but NO OBLIGATION to sell the underlying
- the strike price. But you have NO OBLIGATION to exercise 
- this right if the underlying > strike. This means you have 
- unlimited upside and limited downside.
+                print(f'''
+Buying a PUT gives you the RIGHT but NOT AN OBLIGATION to sell the underlying
+ asset ({name}) for the strike price of ${strike} upon exercising the option.
+{name}\'s value is currently trading at ${under}.
+ 
+These facts are important for 2 reasons for a long put option:
+ First, because you have the RIGHT to purchase {name} at ${strike}, if {name} 
+ moves higher than the contract's strike price of ${strike} then the value 
+ of this call option (that is, its price) increases. To restate, when 
+ {name}\'s price > ${strike} this contract becomes more valuable! If the 
+ contract matures and {name}\'s price > ${strike} then the value of the 
+ contract is the difference in {name}\'s price - strike.
+ 
  
  Long Put guide not finished''')
 
@@ -297,14 +340,29 @@ Buying a put gives you the RIGHT to but NO OBLIGATION to sell the underlying
         print('____________________________________________________________\n')
     # End of guide class method
 
-    def __intro_guide(self):
-        print('----------')
-        print('   Intro  ')
-        print('----------')
+    def __whatare_guide(self):
         
-        intro_text = '''
-Remember: all options are contractual agreements between two parties who are 
- legally bound to perform as specified by their agreement. So think of the word
+        
+        whatare_text = '''
+ --------------------
+   What are options?  
+ --------------------
+Options are a type of contractual agreements between two parties who are 
+ legally bound to perform as specified by their agreement. 
+ 
+Some common contractual features of options:
+  *  An agreement by parties to conduct business at some point in 
+     the future, but on terms set forward today in the contract.
+
+  *  A clause that the BUYER has the `option` of walking away from
+     the deal, if they so choose, with no reprecussions or breach of
+     contractual duty. (this is where options get their name)
+
+  *  A clause that the SELLER has a contractual duty to do business
+     with the BUYER should the BUYER choose to do so. In exchange
+     for this 
+
+
  `Option` as the same thing as `contract`. Further, these contracts are 
  standardized with universal well defined and understood clauses and language 
  which allows the agreements to be easily transferred to others (third-parties) 
@@ -319,18 +377,10 @@ The two parties to these contracts are a BUYER (a.k.a going LONG) of the
  contractual rights for which the seller is contractually obligated to 
  fullfill.
 
-A note before the walkthrough:
 
-This guide uses the terms `price` and `value` interchangablely. They are the 
- same thing. Additionally, you might see the program produce negative currency
- values. For instance, you may see the calculated value for a short call be,
- say, -2.50. Which seems weird. How can a price be negative? This is simply an
- accounting style chosen to give logical consistency to the transactions. This
- is important for correctly describing replicating portfolios. It comes from 
- the perspective of the buyer who pays a physical x amount of money, which is
- a positive cash outflow. Conversely the seller earns the premium x in the 
- form of a negative outflow (which translates to a cash inflow).'''
-        print(f'{intro_text}')
+
+'''
+        print(f'{whatare_text}')
         return 
 
     # save repeating self.
@@ -367,6 +417,36 @@ described using the following mathematical relationship:'''
             else: # must be a put
                 temp_string = f'''Short Put guide not finished'''
         return temp_string
+
+    
+    
+    def __guide_meta(self):
+        if self.position == 'Long':
+            if self.optype == 'Call':
+                temp_string = f'''
+The following guide is auto generated based on your inputs for a {self.position}
+ {self.optype}. The method `.guide()` can also generate guides for Long Puts, 
+ Short Calls, and Short Puts''' 
+            
+            else: #must be a put
+                temp_string = f'''
+The following guide is auto generated based on your inputs for a {self.position}
+ {self.optype}. The method `.guide()` can also generate guides for Long Calls, 
+ Short Calls, and Short Puts'''
+
+        else: # must be a short
+            if self.optype == 'Call':
+                temp_string = f'''
+The following guide is auto generated based on your inputs for a {self.position}
+ {self.optype}. The method `.guide()` can also generate guides for Long Calls
+ Long Puts, and Short Puts'''
+            else: # must be a put
+                temp_string = f'''
+The following guide is auto generated based on your inputs for a {self.position}
+ {self.optype}. The method `.guide()` can also generate guides for Long Calls,
+ Long Puts, and Short Calls'''
+        return temp_string
+
 #test   
 #example = SinglePeriodOption('Long','Call', 100, 110, 120, 90.25, 0.05)
 #print(example.value)
@@ -379,5 +459,5 @@ described using the following mathematical relationship:'''
 # cool, it works.
 
 #additional tests.
-#example = SinglePeriodOption('Short','Call', 95.54, 107.89, 120.02, 90.25, 0.0342, 'TMNQQC')
-#example.guide()
+example = SinglePeriodOption('Short','Call', 95.54, 107.89, 120.02, 90.25, 0.0342, 'TMNQQC')
+example.guide()

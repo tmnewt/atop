@@ -122,7 +122,6 @@ class SinglePeriodOption:
     def get_value(self):
         return self.value
     
-
     # generates a complete solution with choices to display certain information.
     def solution(self, skip_problem_display = False,
                 hide_additional = False):
@@ -146,7 +145,7 @@ class SinglePeriodOption:
         else:
             # Some visual padding
             print('\n=======================================')
-            print(f'''  SINGLE PERIOD BINOMIAL {pos} {opt} ''')
+            print(f'  SINGLE PERIOD BINOMIAL {pos} {opt}')
             print('=======================================')
 
             print(f'''\nGiven:
@@ -178,9 +177,11 @@ What is the fair price for this {pos} {opt}?''')
 
 
 
-
+    # ahhhhhhhh this complete guide is taking forever to finish!
+    # I hate strings...
     def guide(self, hide_intro = False):
-        
+
+        # common values. Makes it easier to write guide.
         pos=          self.position
         opt=          self.optype
         name=         self.underlying_name
@@ -190,66 +191,100 @@ What is the fair price for this {pos} {opt}?''')
         down=   round(self.down_value, 2)
         rf=     round(self.risk_free, 2)
         
-        
+
+        print('\n=======================================================')
+        print(f'   Guide to finding price for {pos} {opt} on {name}')
+        print('=======================================================')
         if hide_intro:
             pass
-        
-        # suggestion to collapse all this in your IDE
         else:
-            print(self.__intro_guide())
+            self.__intro_guide()
+        print('\n******************')
+        print(f'  Walkthrough')
+        print('******************')
+        # String chunk
+        print(f'''
+These problems deal with a 2-state model. This is a very naive (but powerful)
+model which assumes that there are only 2 possible future value states 
+for the underlying asset {name}: An up state where {name}\'s price is {up}
+and a down state where {name}\'s price is {down}. {name}\'s current price
+is {under}. 
 
-        print('**************************************************')
-        print(f'  Start of Walkthrough for {pos} {opt} on {name}')
-        print('**************************************************')
+You might be wondering, where do these values come from? How do we know 
+these values? The answer is, \'it\'s complicated...\' It will be  addressed
+later. For now let's just settle with these 'magic' numbers. On thing at a time.
 
+Our first objective is finding the payoff in each state. As you will see,
+the calculated payoffs are vital in the pricing model. There are just a 
+couple problems; each type of option has their own rules for describing
+the potential payoffs in each state. And they change depending on which
+side of the trade we are on.''')
+        # End of string chunk
 
         if self.position == 'Long':
-            print(f'Remember: going long simply means purchasing the option on {name}.')
+            #String chunk fpr Long
+            print(f'''
+\nIn this problem we are going long, meaning we are the buying party.
+We are buying an option on {name}.''')
+            # End of string chunk if Long
+            
             if self.optype == 'Call':
-                print(f'''\nBuying a Call gives you the RIGHT but NO OBLIGATION to buy the underlying
-asset ({name}) for the strike price of ${strike}. 
-{name}\'s value is currently trading at ${under}
+                #String chunk for if call.
+                print(f'''
+Buying a Call gives you the RIGHT but NOT AN OBLIGATION to buy the underlying
+ asset ({name}) for the strike price of ${strike}. {name}\'s value is 
+ currently trading at ${under}.
 
 These facts are important for 2 reasons for a long call contract:
-First, because this contract gives you the RIGHT to purchase {name} at ${strike}, when
-{name} moves higher than the strike price of ${strike} then the value of this call 
-option (that is, its price) increases. So, when {name}\'s price > ${strike} 
-then 
-this contract becomes more valuable! If contract matures with {name}\'s price > ${strike}
-then the value of the contract is the difference in {name}\'s price - strike.
+First, because you have the RIGHT to purchase {name} at ${strike}, if {name} 
+ moves higher than the contract's strike  price of ${strike} then the value 
+ of this call option (that is, its price) increases. To restate, when 
+ {name}\'s price > ${strike} this contract becomes more valuable! If the 
+ contract matures and {name}\'s price > ${strike} then the value of the 
+ contract is the difference in {name}\'s price - strike.
 
-Second, because this contract requires NO OBLIGATION on your part to buy {name} at ${strike}, 
-if {name}\'s price remains lower than the strike price of ${strike} then you 
-are free to walk away. So, while {name}\'s price < ${strike} then this contract 
-becomes worth less and less. If 
+Second, this contract requires NO OBLIGATION on your part to buy 
+ {name} at ${strike}. If {name}\'s price remains lower than the strike 
+ price of ${strike} then you are free to walk away! While {name}\'s price < 
+ ${strike} then this contract becomes worth less and less. If the contract
+ matures and {name}\'s price < ${strike} the value of this contract is 0. 
+ Had you bought this contract you would only be out the premium you paid.
+ Compare that to outright buying the underlying asset in which case you
+ would sustain further losses. 
     
-These feature are what makes call options special.
-What this all means is there is potential for huge upside if {name}\'s is higher than''')
+These features are what makes call options special. Holders of these contracts
+ have no participation in the performance of {name}, yet benifit if {name} does
+ well, but are protected in the event of a downturn. There is unlimited 
+ upside potential but limited downside potential!
+{self.__binomial_reminder()} 
 
-            else:
-                print('''   Buying a put gives you the RIGHT to SELL the underlying asset at
-    the strike price. But you have NO OBLIGATION to exercise 
-    this right if the underlying > strike. This means you have 
-    unlimited upside and limited downside.''')
+payoffs = max( underlying_given_state - strike, 0)
 
-        #else:
-        #    print('Shorting means selling the option (a.k.a writing an option)')
-
+Which translates to:
+{self.__payoff_guide_helper()}
 
 
+''')
+
+            else: # must be a put
+                print('''
+Buying a put gives you the RIGHT to but NO OBLIGATION to sell the underlying
+ the strike price. But you have NO OBLIGATION to exercise 
+ this right if the underlying > strike. This means you have 
+ unlimited upside and limited downside.
+ 
+ Long Put guide not finished''')
+
+
+        else: # must be a short
+            if self.optype == 'Call':
+                print(f'''Short Call guide not finished''')
+            else: # must be a put
+                print(f'''Short Put guide not finished''')
+        
+        print('This guide is still being worked on')
         
         
-        print('First, find the payoffs in the up and down state:')
-        print('For the up payoff: up_value - underlying')
-        print(f'        up payoff: {up}')
-        print('')
-        print('Up state payoff is {} and down state payoff is {}'.format(
-            round(self.up_payoff, 2),
-            round(self.down_payoff, 2))
-            )
-        print('finish later...')
-        
-        # Insane Sanity check
         
         #print('\n Sanity Check')
         #print(self.volatility)
@@ -257,41 +292,81 @@ What this all means is there is potential for huge upside if {name}\'s is higher
         #print('Up factor: {}'.format(self.__sanity_check(self.volatility[1])[0]))
         #print('Dn factor: {}'.format(self.__sanity_check(self.volatility[2])[1]))
         #print('Dn factor: {}'.format(self.__sanity_check(self.volatility[3])[1]))
-        #print('____________________________________________________________\n')
-
+        
+        
+        print('____________________________________________________________\n')
+    # End of guide class method
 
     def __intro_guide(self):
+        print('----------')
+        print('   Intro  ')
+        print('----------')
+        
         intro_text = '''
-Remember: all options are contractual agreements between two parties who are legally 
-bound to perform as specified by their agreement. So think of the word `Option` as the same thing as
-`contract`. Further, these contracts are standardized with universal well defined and understood 
-clauses and language which allows the agreements to be easily transferred to others (third-parties) 
-without loss of contractual duty or value. Lastly, remember all options derive their value from the 
-performance of the underlying asset over the life of the contract.
+Remember: all options are contractual agreements between two parties who are 
+ legally bound to perform as specified by their agreement. So think of the word
+ `Option` as the same thing as `contract`. Further, these contracts are 
+ standardized with universal well defined and understood clauses and language 
+ which allows the agreements to be easily transferred to others (third-parties) 
+ without loss of contractual duty or value. Lastly, remember all options derive
+ their value from the performance of the underlying asset over the life of the
+ contract.
 
-The two parties to these contracts are a BUYER (a.k.a going LONG) of the contract who pays a price 
-(a.k.a. a premium) and on the other side is the party WRITING the option (a.k.a the SELLER, a.k.a shorting) 
-who collects the premium the buyer paid. The contract is formed with the buyer purchasing certain 
-contractual rights for which the seller is contractually obligated to fullfill.
+The two parties to these contracts are a BUYER (a.k.a going LONG) of the 
+ contract who pays a price (aka a premium) and on the other side is the party
+ WRITING the option (aka the SELLER, aka shorting) who collects the premium 
+ the buyer paid. The contract is formed with the buyer purchasing certain 
+ contractual rights for which the seller is contractually obligated to 
+ fullfill.
 
-As you will see this contract describes a zero-sum transaction. The gains of one party are the losses of the 
-other party. 
+A note before the walkthrough:
+
+This guide uses the terms `price` and `value` interchangablely. They are the 
+ same thing. Additionally, you might see the program produce negative currency
+ values. For instance, you may see the calculated value for a short call be,
+ say, -2.50. Which seems weird. How can a price be negative? This is simply an
+ accounting style chosen to give logical consistency to the transactions. This
+ is important for correctly describing replicating portfolios. It comes from 
+ the perspective of the buyer who pays a physical x amount of money, which is
+ a positive cash outflow. Conversely the seller earns the premium x in the 
+ form of a negative outflow (which translates to a cash inflow).'''
+        print(f'{intro_text}')
+        return 
+
+    # save repeating self.
+    def __binomial_reminder(self):
+        temp_string = f'''
+Since this is a single period option where {self.underlying_name} starts at 
+{self.underlying_value} and either moves up to {self.up_value} or down to 
+{self.down_value} (and there are no other values {self.underlying_name}
+can take) we only need to calculate the potential payoffs for 2 states. 
+Now given this is a {self.position} {self.optype} all potential payoff can be 
+described using the following mathematical relationship:'''
+        return temp_string
 
     
-Lastly, this guide uses the terms `price` and `value` interchangablely. They are the same thing. 
-Additionally, you might see the program produce negative currency values. For instance,
-you may see the calculated value for a short call be, say, -2.50. Which seems weird. 
-How can a price be negative? This is simply an accounting style chosen to give logical 
-consistency to the transactions. This is important for correctly describing replicating 
-portfolios. It is centered around the perspective of the buyer who pays a physical x 
-amount of money, thus a positive cash outflow. Conversely the seller earns the premium x
-in the form of a negative outflow (which translates to a cash inflow).'''
-        
+    # function to keep the guide from being bloated.
+    def __payoff_guide_helper(self):
+        if self.position == 'Long':
+            if self.optype == 'Call':
+                temp_string = f''' 
+    up_payoff = max(up_value - strike, 0)
+    down_payoff = max(down_value - strike, 0)
+    
+    Plug in the respective values and find that
 
-        #print(intro_text)
-        print(f'{intro_text:<80}')
-        #return intro_text
+    up_payoff:   max({  self.up_value} - {self.strike_value}, 0) = {round(max(self.up_value -self.strike_value,0),2)}
+    down_payoff: max({self.down_value} - {self.strike_value}, 0) = {round(max(self.down_value -self.strike_value,0),2)}'''
 
+            else: #must be a put
+                temp_string = f'''Long Put guide not finished'''
+
+        else: # must be a short
+            if self.optype == 'Call':
+                temp_string = f'''Short Call guide not finished'''
+            else: # must be a put
+                temp_string = f'''Short Put guide not finished'''
+        return temp_string
 #test   
 #example = SinglePeriodOption('Long','Call', 100, 110, 120, 90.25, 0.05)
 #print(example.value)
@@ -304,6 +379,5 @@ in the form of a negative outflow (which translates to a cash inflow).'''
 # cool, it works.
 
 #additional tests.
-#example = SinglePeriodOption('Long','Call', 95.54, 107.89, 120.02, 90.25, 0.0342, 'TMNQQC')
+#example = SinglePeriodOption('Short','Call', 95.54, 107.89, 120.02, 90.25, 0.0342, 'TMNQQC')
 #example.guide()
-    

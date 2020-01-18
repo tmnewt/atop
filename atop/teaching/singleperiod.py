@@ -96,11 +96,11 @@ class SinglePeriodOption:
         box.append(1+sqrt(1+2*(self.risk_free-log(self.__up_factor())))) #works...
         
         box.append(abs(1+sqrt(1+2*(self.risk_free-log(self.__dn_factor())))/-1)) 
-        # prior is equivalent to: sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value))-1
+        # equivalent to: sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value))-1
         
         box.append((1+sqrt(1+2*(self.risk_free-log(self.__dn_factor()))))/-1) 
-        # prior equivalent to: -sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value))-1
-        # which is a slightly different approach.
+        # equivalent to: -sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value))-1
+        
         return box
     
     def __sanity_check(self, sigma):
@@ -153,7 +153,7 @@ class SinglePeriodOption:
     strike value of ${strike}. We know for certain  {name}\'s price will either be ${up}, 
     or ${down}, next period. The current risk-free rate is {rf}
 
-What is the fair price for this {pos} {opt} today?''')                            
+    What is the fair price for this {pos} {opt} today?''')                            
         
         # Still in the solution function
             print('\n--------------------------------------')
@@ -173,13 +173,17 @@ What is the fair price for this {pos} {opt} today?''')
                 print(f'Risk-neutral probability for down state is {round(self.down_risk_neutral_prob,4)}')
         print('____________________________________________________________\n')
 
-            
 
 
 
+
+
+    # Everything below here probably needs to find its way to its own file.
+    # But before doing that, it should be finished.
     # ahhhhhhhh this complete guide is taking forever to finish!
     # I hate strings...
-    def guide(self, hide_what_is_an_option = False):
+    def guide(self, hide_intro = False, 
+                    hide_what_is_an_option = False,):
 
         # common values. Makes it easier to write guide.
         pos=          self.position
@@ -190,6 +194,7 @@ What is the fair price for this {pos} {opt} today?''')
         up=     round(self.up_value, 2)
         down=   round(self.down_value, 2)
         rf=     round(self.risk_free, 2)
+
         
 
         print('\n=======================================================')
@@ -197,72 +202,92 @@ What is the fair price for this {pos} {opt} today?''')
         print('=======================================================')
         print(f'''{self.__guide_meta()}
 
-WARNING: all versions of this guide are still being worked on.
-
+WARNING: all versions of this guide are still being worked on.''')
+        
+        if hide_intro:
+            pass
+        
+        # Intro string chunk
+        else:
+            print('''
  ----------
    Intro  
  ----------
 This guide aims to provide users with a complete walkthrough of calculating 
- the fair price (today's price) for a single period binomial option. It's 
- aimed at those looking for a deep dive into the subject of options. This 
+ the fair price (today's price) for a single period binomial option.
+ I hope to help those looking to dive deep into the subject of options. The 
  guide goes all in, meticulously walking through every step of the process
  guiding the user to the solution. At times it can come accross as
  handholding and repetitive. But I argue that this is necessary as there are
  too many concepts and values to keep track. Sometimes we just need an 
- organized and thorough method of logically walking through problems.
+ organized and thorough method of logically walking through problems. Lastly:
+ the key feature of this guide is that it is dynamic and handles long calls,
+ long puts, short calls, and short puts!
 
-This guide uses the terms `price` and `value` interchangablely. They are the 
+Some housekeeping first:
+
+The guide uses the terms `price` and `value` interchangablely. They are the 
  same thing. Additionally, you might see the program produce negative currency
  values. For instance, you may see the calculated value for a short call be,
  say, $ -2.50. Which seems weird. How can a price be negative? This is simply 
  an accounting style chosen to give logical consistency to the transactions. 
- It will become important later...''')
- 
- #is important for correctly describing replicating portfolios. It comes from 
- #the perspective of the buyer who pays a physical x amount of money, which is
- #a positive cash outflow. Conversely the seller earns the premium x in the 
- #form of a negative outflow (which translates to a cash inflow). Don't 
- #worry if that sounds confusing now. 
- 
+It will become important later for correctly describing replicating portfolios''')
+        #End of intro string chunk
+
 
         if hide_what_is_an_option:
             pass
         else:
             self.__whatare_guide()
+        
+        
         print('\n******************')
         print(f'  Walkthrough')
         print('******************')
-        # String chunk
+        # Taking about the problem chunk
         print(f'''
-These problems deal with a 2-state model. This is a very naive (but powerful)
-model which assumes that there are only 2 possible future value states 
-for the underlying asset {name}: An up state where {name}\'s price is {up}
-and a down state where {name}\'s price is {down}. {name}\'s current price
-is {under}. 
+Stating the problem:
 
-You might be wondering, where do these values come from? How do we know 
-these values? The answer is, \'it\'s complicated...\' It will be  addressed
-later. For now let's just settle with these 'magic' numbers. On thing at a time.
+There is a single period {pos} {opt} on the asset {name} whose current 
+ price is ${under}, with a strike price of ${strike}. 
+ Next period {name}\'s price will either be ${up}, 
+ or ${down}, next period. The current risk-free rate is {rf}
 
-Our first objective is finding the payoff in each state. As you will see,
-the calculated payoffs are vital in the pricing model. There are just a 
-couple problems; each type of option has their own rules for describing
-the potential payoffs in each state. And they change depending on which
-side of the trade we are on.''')
+What is the fair price for this {pos} {opt} today? 
+
+First step is to find the payoff states for the next period.
+ A single period binomial option follows a 2-state model. 
+ Imagine there are only 2 possible future states of value for the 
+ underlying asset {name}: An `up` state where {name}\'s price is {up}
+ and a down state where {name}\'s price is {down}.
+
+        You might be wondering, where do these values come from? How do 
+        we know {name} will move exactly to these values? The simple answer
+        is that it is just an example. But a more fitting answer would be, 
+        \'it\'s complicated...\' It will be addressed later, I promise.
+        But, for now let's just settle with these `magic` numbers. 
+        One thing at a time.
+
+Now, the 2 standard types of options are: CALLs and a PUTs. 
+Additionally, the 2 sides to this trade: a buyer and seller. 
+ 
+ * Remember, this generated guide focuses on {self.optype}. 
+   To see the walkthrough from a different perspective change the 
+   `position` and the `op_type` arguments.''')
         # End of string chunk
-
+        
+        
+        # logic for each type and each possible position.
         if self.position == 'Long':
-            #String chunk fpr Long
             print(f'''
-\nIn this problem we are going long, meaning we are the buying party.
-We are buying an option on {name}.''')
-            # End of string chunk if Long
+\nIn this problem we are going long, meaning we are purchasing a
+{opt} option on {name}.''')
             
             if self.optype == 'Call':
                 #String chunk for if call.
                 print(f'''
 Buying a Call gives you the RIGHT but NOT AN OBLIGATION to buy the underlying
- asset ({name}) for the strike price of ${strike} upon exercising the option. 
+ asset ({name}) for the strike price of ${strike} upon exercising the option.
  {name}\'s value is currently trading at ${under}.
 
 These facts are important for 2 reasons for a long call option:
@@ -272,11 +297,11 @@ These facts are important for 2 reasons for a long call option:
  rises from {under} to {up}. If you owned this call option, upon exercising it,
  you get to buy {name} at {strike}. You could turn around and sell it at the
  current market price of {up} and walk away with a payoff of ${up-strike:.2f}.
- To reiterate, when 
- {name}\'s price > ${strike} this contract becomes more valuable! If the 
- contract matures and {name}\'s price > ${strike} then the value of the 
- contract is the difference in {name}\'s price - strike.
+ Or, after exercising the option  you could just keep {name}, happy that you
+ acquired it for a cheaper price.''')
 
+              
+                print(f'''
 Second, this contract requires NO OBLIGATION on your part to buy 
  {name} at ${strike}. If {name}\'s price remains lower than the strike 
  price of ${strike} then you are free to walk away! While {name}\'s price < 
@@ -286,10 +311,13 @@ Second, this contract requires NO OBLIGATION on your part to buy
  Compare that to outright buying the underlying asset in which case you
  would sustain further losses. 
     
-These features are what makes call options special. Holders of these contracts
- have no participation in the performance of {name}, yet benifit if {name} does
- well, but are protected in the event of a downturn. There is unlimited 
- upside potential but limited downside potential!
+These features are what make long call options special. Holders of a long 
+ call option simultaneously have no participation in the performance of 
+ {name}, yet can benifit if {name} does well, but are not hurt should 
+ {name}\'s value fall.  Therefore this long call option has significant
+ upside potential and the only downside is the price you pay for the 
+ option today. 
+
 {self.__binomial_reminder()} 
 
 payoffs = max( underlying_given_state - strike, 0)
@@ -298,14 +326,13 @@ Which translates to:
 {self.__payoff_guide_helper()}
 
 
-
 Long Call guide not finished''')
 
             else: # must be a put
                 print(f'''
 Buying a PUT gives you the RIGHT but NOT AN OBLIGATION to sell the underlying
  asset ({name}) for the strike price of ${strike} upon exercising the option.
-{name}\'s value is currently trading at ${under}.
+ {name}\'s value is currently trading at ${under}.
  
 These facts are important for 2 reasons for a long put option:
  First, because you have the RIGHT to purchase {name} at ${strike}, if {name} 
@@ -315,20 +342,45 @@ These facts are important for 2 reasons for a long put option:
  contract matures and {name}\'s price > ${strike} then the value of the 
  contract is the difference in {name}\'s price - strike.
  
- 
- Long Put guide not finished''')
+MISSING STUFF HERE!!!
+{self.__binomial_reminder()}
+
+payoffs = max( strike - underlying_given_state, 0)
+
+Which translates to:
+{self.__payoff_guide_helper()}
+
+
+Long Put guide not finished''')
 
 
         else: # must be a short
             if self.optype == 'Call':
-                print(f'''Short Call guide not finished''')
+                print(f'''
+
+MISSING STUFF HERE FOR SHORT CALL GUIDE!!!
+{self.__binomial_reminder()}
+payoffs = -max( underlying_given_state - strike, 0)
+
+Which translates to:
+{self.__payoff_guide_helper()}
+
+Short Call guide not finished
+''')
             else: # must be a put
-                print(f'''Short Put guide not finished''')
+                print(f'''
+
+MISSING STUFF HERE FOR SHORT PUT GUIDE!!!
+{self.__binomial_reminder()}
+
+payoffs = -max( strike - underlying_given_state, 0)
+
+Which translates to:
+{self.__payoff_guide_helper()}
+
+Short Put guide not finished''')
         
-        print('This guide is still being worked on')
-        
-        
-        
+
         #print('\n Sanity Check')
         #print(self.volatility)
         #print('Up factor: {}'.format(self.__sanity_check(self.volatility[0])[0]))
@@ -337,61 +389,76 @@ These facts are important for 2 reasons for a long put option:
         #print('Dn factor: {}'.format(self.__sanity_check(self.volatility[3])[1]))
         
         
-        print('____________________________________________________________\n')
+        print('___________________________________________________\n')
     # End of guide class method
 
     def __whatare_guide(self):
         
-        
-        whatare_text = '''
- --------------------
-   What are options?  
- --------------------
-Options are a type of contractual agreements between two parties who are 
- legally bound to perform as specified by their agreement. 
+        #whatare_options string chunk
+        whatare_text = f'''
+--------------------
+ What are options?  
+--------------------
+All options are contractual agreements between two parties.
+  Typically these contractual agreements are based on European, English,
+  and American contract and business law. Like generic contracts, 
+  options also derive their value from the performance of the parties 
+  to the contract. But, it is the unique contractual structure 
+  of these particular contracts which make options noteworthy.
  
-Some common contractual features of options:
-  *  An agreement by parties to conduct business at some point in 
-     the future, but on terms set forward today in the contract.
+Some `universal` contractual features unique to options:
+  *  An agreement by parties to perform some obligation at some point in 
+     the future (typically within 1 year), but on terms set forth today.
 
-  *  A clause that the BUYER has the `option` of walking away from
+  *  An agreement that the BUYER has the `option` of walking away from
      the deal, if they so choose, with no reprecussions or breach of
-     contractual duty. (this is where options get their name)
+     contractual duty. (this is where options get their name).
 
-  *  A clause that the SELLER has a contractual duty to do business
-     with the BUYER should the BUYER choose to do so. In exchange
-     for this 
+  *  An agreement that the SELLER has a contractual duty to perform some 
+     obligation for the BUYER should the BUYER deemand performance from 
+     the Seller. 
 
+  *  In exchange for this agreement the buyer pays some value to the
+     seller today for seller\'s promise to perform.   
 
- `Option` as the same thing as `contract`. Further, these contracts are 
- standardized with universal well defined and understood clauses and language 
- which allows the agreements to be easily transferred to others (third-parties) 
- without loss of contractual duty or value. Lastly, remember all options derive
- their value from the performance of the underlying asset over the life of the
- contract.
+  ^^^^^This is pretty much all options are!
 
-The two parties to these contracts are a BUYER (a.k.a going LONG) of the 
- contract who pays a price (aka a premium) and on the other side is the party
- WRITING the option (aka the SELLER, aka shorting) who collects the premium 
- the buyer paid. The contract is formed with the buyer purchasing certain 
- contractual rights for which the seller is contractually obligated to 
- fullfill.
+Further, the option contracts you would find by Googling the term
+ `financial options` are standardized types with universally 
+ agreed upon clauses/legalese which allow such options to be 
+ easily bought and sold to others (third-parties) without loss 
+ of contractual duty and value.
 
-
-
-'''
+To reiterate:
+    * Options are contracts
+    * These contracts have value
+    * Options have unique features when it comes to contracts
+        * Specifically the buyer\'s choice to exit the contract
+    * There are 2 parties to the deal
+    * a BUYER (a.k.a going LONG) of the contract 
+        * who pays some value (aka the premium) 
+    * a SELLER (aka the UNDERWRITER, aka shorting) 
+        * who collects the premium from the buyer. 
+    * These contracts are standardized and can be traded'''
+        #End of whatare_options string chunk
         print(f'{whatare_text}')
         return 
 
     # save repeating self.
     def __binomial_reminder(self):
         temp_string = f'''
+The big question is: How much should we pay for this contract? 
+What is this deal worth today?
+
+To start, we begin by identifying the potential payoff states, which are
+vital to correctly pricing the contract.
+
 Since this is a single period option where {self.underlying_name} starts at 
-{self.underlying_value} and either moves up to {self.up_value} or down to 
-{self.down_value} (and there are no other values {self.underlying_name}
-can take) we only need to calculate the potential payoffs for 2 states. 
-Now given this is a {self.position} {self.optype} all potential payoff can be 
-described using the following mathematical relationship:'''
+ {self.underlying_value} and either moves up to {self.up_value} or down to 
+ {self.down_value} (and there are no other values {self.underlying_name}
+ can take) we only need to calculate the potential payoffs for 2 states. 
+ Now given this is a {self.position} {self.optype} the potential payoff
+ values can be  described using the following mathematical relationship:'''
         return temp_string
 
     
@@ -403,49 +470,100 @@ described using the following mathematical relationship:'''
     up_payoff = max(up_value - strike, 0)
     down_payoff = max(down_value - strike, 0)
     
-    Plug in the respective values and find that
+    Plug in the respective values and find that,
 
-    up_payoff:   max({  self.up_value} - {self.strike_value}, 0) = {round(max(self.up_value -self.strike_value,0),2)}
+    up_payoff:   max({  self.up_value} - {self.strike_value}, 0) = {round(max(self.up_value -  self.strike_value,0),2)}
     down_payoff: max({self.down_value} - {self.strike_value}, 0) = {round(max(self.down_value -self.strike_value,0),2)}'''
 
             else: #must be a put
-                temp_string = f'''Long Put guide not finished'''
+                temp_string = f'''
+    up_payoff = max(strike - up_value, 0)
+    down_payoff = max(strike - down_value, 0)
+    
+    Plug in the respective values and find that,
+
+    up_payoff:   max({self.strike_value} - {self.up_value  }, 0) = {round(max(self.strike_value -  self.up_value,0),2)}
+    down_payoff: max({self.strike_value} - {self.down_value}, 0) = {round(max(self.strike_value -self.down_value,0),2)}'''
 
         else: # must be a short
             if self.optype == 'Call':
-                temp_string = f'''Short Call guide not finished'''
+                temp_string = f'''
+    up_payoff =   -max(up_value - strike, 0)
+    down_payoff = -max(down_value - strike, 0)
+    
+    Plug in the respective values and find that,
+
+    up_payoff:   -max({  self.up_value} - {self.strike_value}, 0) = {-round(max(self.up_value -  self.strike_value,0),2)}
+    down_payoff: -max({self.down_value} - {self.strike_value}, 0) = {-round(max(self.down_value -self.strike_value,0),2)}'''
+            
             else: # must be a put
-                temp_string = f'''Short Put guide not finished'''
+                temp_string = f'''
+    up_payoff = max(strike - up_value, 0)
+    down_payoff = max(strike - down_value, 0)
+    
+    Plug in the respective values and find that,
+
+    up_payoff:   -max({self.strike_value} - {self.up_value  }, 0) = {-round(max(self.strike_value -  self.up_value,0),2)}
+    down_payoff: -max({self.strike_value} - {self.down_value}, 0) = {-round(max(self.strike_value -self.down_value,0),2)}'''
         return temp_string
+    # end of __payoff_guide_helper()
+
+
+    def __guide_hedge(self):
+        return
 
     
+
+
+    def __guide_rf_units(self):
+        return
+
+
+    def __guide_pricing(self):
+        return
     
+    
+
+
+
+
     def __guide_meta(self):
         if self.position == 'Long':
             if self.optype == 'Call':
                 temp_string = f'''
-The following guide is auto generated based on your inputs for a {self.position}
- {self.optype}. The method `.guide()` can also generate guides for Long Puts, 
- Short Calls, and Short Puts''' 
-            
+The following guide is auto generated based on your inputs for
+a {self.position} {self.optype}. The method `.guide()` can also 
+generate guides for Long Puts, Short Calls, and Short Puts.
+To see those guides change the `position` and `op_type` 
+arguments.''' 
             else: #must be a put
                 temp_string = f'''
-The following guide is auto generated based on your inputs for a {self.position}
- {self.optype}. The method `.guide()` can also generate guides for Long Calls, 
- Short Calls, and Short Puts'''
-
+The following guide is auto generated based on your inputs for 
+a {self.position} {self.optype}. The method `.guide()` can also 
+generate guides for Long Calls, Short Calls, and Short Puts.
+To see those guides change the `position` and `op_type` 
+arguments'''
         else: # must be a short
             if self.optype == 'Call':
                 temp_string = f'''
-The following guide is auto generated based on your inputs for a {self.position}
- {self.optype}. The method `.guide()` can also generate guides for Long Calls
- Long Puts, and Short Puts'''
+The following guide is auto generated based on your inputs for 
+a {self.position} {self.optype}. The method `.guide()` can also 
+generate guides for Long Calls, Long Puts, and Short Puts.
+To see those guides change the `position` and `op_type` 
+arguments'''
             else: # must be a put
                 temp_string = f'''
-The following guide is auto generated based on your inputs for a {self.position}
- {self.optype}. The method `.guide()` can also generate guides for Long Calls,
- Long Puts, and Short Calls'''
+The following guide is auto generated based on your inputs for 
+a {self.position} {self.optype}. The method `.guide()` can also 
+generate guides for Long Calls, Long Puts, and Short Calls.
+To see those guides change the `position` and `op_type` 
+arguments'''
         return temp_string
+    #end of __guide_meta()
+
+
+
+
 
 #test   
 #example = SinglePeriodOption('Long','Call', 100, 110, 120, 90.25, 0.05)
@@ -459,5 +577,19 @@ The following guide is auto generated based on your inputs for a {self.position}
 # cool, it works.
 
 #additional tests.
-example = SinglePeriodOption('Short','Call', 95.54, 107.89, 120.02, 90.25, 0.0342, 'TMNQQC')
-example.guide()
+example = SinglePeriodOption('Short','Put', 95.54, 107.89, 120.02, 90.25, 0.0342, 'TMNQQC')
+example.guide( hide_intro= True ,hide_what_is_an_option=True)
+
+
+
+
+
+
+
+# JUNKYARD
+
+# SOME STUFF ON LONG CALL. dropped because of references to time.
+#To reiterate, when {name}\'s price > ${strike} this contract becomes 
+#more valuable! If the 
+#contract matures and {name}\'s price > ${strike} then the value of the 
+#contract is the difference in {name}\'s price - strike.

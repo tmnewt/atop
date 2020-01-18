@@ -238,8 +238,6 @@ class SinglePeriodOption:
         
         if hide_intro:
             pass
-        
-        # Intro string chunk
         else:
             intro_string ='''
                 ----------
@@ -361,25 +359,25 @@ class SinglePeriodOption:
             else: # must be a put
                 long_put_string = f'''
                 Buying a PUT gives you the RIGHT but NOT AN OBLIGATION to SELL the underlying
-                 asset ({name}) for the strike price of ${strike} upon exercising the option.
-                 {name}\'s value is currently trading at ${under}.
+                asset ({name}) for the strike price of ${strike} upon exercising the option.
+                {name}\'s value is currently trading at ${under}.
 
                        We cannot stress these facts enough! People easily confuse 
-                       puts with shorting stocks (likely because of its similarites 
-                       in the payoff diagrams. That and because the term SELL is 
+                       puts with shorting stocks (likely because of the similarites 
+                       in the payoff diagrams. That, and because the term SELL is 
                        used in describing a key feature of a put.)
 
                 First, unlike a long call you are not paying for the right to potentially
-                 purchase {name} at {strike} but instead paying for the right to potentially
-                 SELL {name} at {strike}. The counter party that sold you this put option on
-                 {name} is now obligated to buy {name} at {strike} if you decide to
-                 exercise the option.
+                purchase {name} at {strike} but instead paying for the right to potentially
+                SELL {name} at {strike}. The counter party that sold you this put option on
+                {name} is now obligated to buy {name} at {strike} if you decide to
+                exercise the option.
                 
                 Because you have the RIGHT to sell {name} at ${strike}, if {name} 
-                 moves lower than the contract's strike price of ${strike} then the value 
-                 of this call option (that is, its price) increases. To restate, when 
-                 {name}\'s price < ${strike} this contract becomes more valuable! That 
-                 behavior looks a lot like a .
+                moves lower than the contract's strike price of ${strike} then the value 
+                of this call option (that is, its price) increases. To restate, when 
+                {name}\'s price < ${strike} this contract becomes more valuable! That 
+                behavior looks a lot like a .
 
                 MISSING STUFF HERE!!!
                 {self.__binomial_reminder()}

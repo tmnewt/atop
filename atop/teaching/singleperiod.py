@@ -11,9 +11,9 @@ class SinglePeriodOption:
     probability, or time! This is only for educational purposes. '''
 
     def __init__(self, position: str, optype: str,
-                    underlying_value: int or float,
-                    strike_value: int or float, up_value: int or float,
-                    down_value: int or float, risk_free: int or float,
+                    underlying_value: float or int,
+                    strike_value: float or int, up_value: float or int,
+                    down_value: float or int, risk_free: float or int,
                     underlying_name = 'YBM'):
         self.position =         position    
         self.optype =           optype
@@ -90,17 +90,16 @@ class SinglePeriodOption:
     def __dn_factor(self):
         return self.down_value/self.underlying_value
     
+    
+    # part of reality checks
     def __volatility_calc(self):
         box = []
         box.append(1-sqrt(1+2*(self.risk_free-log(self.__up_factor())))) #works
         box.append(1+sqrt(1+2*(self.risk_free-log(self.__up_factor())))) #works...
-        
         box.append(abs(1+sqrt(1+2*(self.risk_free-log(self.__dn_factor())))/-1)) 
         # equivalent to: sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value))-1
-        
         box.append((1+sqrt(1+2*(self.risk_free-log(self.__dn_factor()))))/-1) 
         # equivalent to: -sqrt( (1+(2*self.risk_free)) + 2*log(self.underlying_value/self.down_value))-1
-        
         return box
     
     def __sanity_check(self, sigma):
@@ -121,6 +120,39 @@ class SinglePeriodOption:
     
     def get_value(self):
         return self.value
+
+    
+    # Part of reality checks
+    # Put call parity check. Can't check when positions are short... yet.
+    def put_call_parity_check(self):
+        if self.optype == 'Call':
+            flip_pos = 'Put'
+        else:
+            flip_pos = 'Call'
+        flip = SinglePeriodOption('Long',flip_pos, self.underlying_value, 
+                                                 self.strike_value, 
+                                                 self.up_value,
+                                                 self.down_value,
+                                                 self.risk_free)
+        if self.optype == 'Call':
+            check = (flip.get_value() + self.underlying_value
+                    -self.strike_value/(1+self.risk_free)
+                    -self.get_value())
+        # main must be a put
+        else:
+            check = (self.get_value() + self.underlying_value
+                    -self.strike_value/(1+self.risk_free)
+                    -flip.get_value())
+        print(f'''
+            Passes put-call-parity check when:
+            put + underlying = PV(strike) + call
+               
+               rearrange
+            
+            put + underlying - PV(strike) - call = 0
+            
+            Calculated value is: {round(check,8)}
+            ''')
     
     # generates a complete solution with choices to display certain information.
     def solution(self, skip_problem_display = False,
@@ -166,7 +198,7 @@ class SinglePeriodOption:
             else:
                 print('\nIntermediate calculation answers:')
                 print(f'\nProblem\'s up factor: {round(self.__up_factor(),4)}')
-                print(f'Problem\'s down factor: {round(self.__up_factor(),4)}')
+                print(f'Problem\'s down factor: {round(self.__dn_factor(),4)}')
                 print(f'Hedge Ratio (a.k.a units of underlying): {round(self.hedge_ratio,4)}')
                 print(f'Value of bond position for hedging purposes: $ {round(self.rf_units,4)}')
                 print(f'Risk-neutral probability for up state is {round(self.up_risk_neutral_prob,4)}')
@@ -330,12 +362,21 @@ Long Call guide not finished''')
 
             else: # must be a put
                 print(f'''
-Buying a PUT gives you the RIGHT but NOT AN OBLIGATION to sell the underlying
+Buying a PUT gives you the RIGHT but NOT AN OBLIGATION to SELL the underlying
  asset ({name}) for the strike price of ${strike} upon exercising the option.
  {name}\'s value is currently trading at ${under}.
  
-These facts are important for 2 reasons for a long put option:
- First, because you have the RIGHT to purchase {name} at ${strike}, if {name} 
+        We cannot stress these facts enough! People easily confuse 
+        puts with shorting stocks (likely because of its similarites 
+        in the payoff diagrams. That and because the term SELL is 
+        used in describing a key feature of a put.)
+
+ First, unlike a long call you are not paying for the right to potentially
+ purchase {name} at {strike} but instead payinf for the right to potentially
+ SELL {name} at {strike}. The counter party that sold you this put option on
+ {name} is now obligated 
+ 
+  because you have the RIGHT to purchase {name} at ${strike}, if {name} 
  moves higher than the contract's strike price of ${strike} then the value 
  of this call option (that is, its price) increases. To restate, when 
  {name}\'s price > ${strike} this contract becomes more valuable! If the 
@@ -577,8 +618,15 @@ arguments'''
 # cool, it works.
 
 #additional tests.
-example = SinglePeriodOption('Short','Put', 95.54, 107.89, 120.02, 90.25, 0.0342, 'TMNQQC')
-example.guide( hide_intro= True ,hide_what_is_an_option=True)
+example = SinglePeriodOption('Short','Put', 95.54, 107.89, 120.02, 90.25, 0.0342)
+example.solution()
+example = SinglePeriodOption('Short','Call', 95.54, 107.89, 120.02, 90.25, 0.0342)
+example.solution()
+
+example.put_call_parity_check()
+
+#example.solution()
+#example.guide( hide_intro= True ,hide_what_is_an_option=True)
 
 
 

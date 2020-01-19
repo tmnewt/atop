@@ -4,14 +4,30 @@ import numpy as np
 
 class NPeriodBOPM:
 
-    def __init__(self, position: str, op_type: str, 
+    def __init__(self, position: str, optype: str, 
                     underlying_value_value: float or int, 
                     strike_value: float or int, 
                     volatility: float, risk_free: float, 
                     nperiods: int, time_in_years: float or int, 
                     factor_method = 'Jarrow'):
-        self.position = position
-        self.op_type = op_type
+        
+        position = position.lower().capitalize()
+        if position == 'Long' or position == 'Short':
+            self.position = position
+        
+        else:
+            raise TypeError(f'''\n\n{position} does not describe a type of trade. Please input `long` or `short`
+                when refering to what side of the trade you are on.''')
+        
+        optype = optype.lower().capitalize()
+        if optype == 'Call' or optype == 'Put':
+            self.optype = optype
+        
+        else:
+            raise TypeError(f'''\n\nI've never heard of a {optype} type of option! Must be new...
+                Please stick to either `Call` or `Put` type options!''')
+        
+
         self.underlying_value = underlying_value_value
         self.strike_value = strike_value
         self.volatility = volatility
@@ -90,7 +106,7 @@ class NPeriodBOPM:
     def __payoff_vector_calc(self):
         # Special thanks to cantaro86 for posting his solution on github
         payoffs = np.zeros(self.nperiods + 1) # get array going
-        if self.op_type == 'Call':
+        if self.optype == 'Call':
             payoffs[:] = np.maximum(self.underlying_value_vector - self.strike_value, 0.0)
         else:
             payoffs[:] = np.maximum(self.strike_value - self.underlying_value_vector, 0.0)

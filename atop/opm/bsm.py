@@ -15,15 +15,31 @@ class BlackScholesOPM:
     Currently does not support options where the underlying has intermediate cash
     flows such as a stock with a dividend payment. It will be implemented in the 
     future.'''
-    def __init__(self, position, op_type, underlying_value, strike, volatility, risk_free, time_in_years):
-        self.position = position
-        self.op_type = op_type
+    def __init__(self, position, optype, underlying_value, strike, volatility, risk_free, time_in_years):
+        
+        position = position.lower().capitalize()
+        if position == 'Long' or position == 'Short':
+            self.position = position
+        
+        else:
+            raise TypeError(f'''\n\n{position} does not describe a type of trade. Please input `long` or `short`
+                when refering to what side of the trade you are on.''')
+        
+        optype = optype.lower().capitalize()
+        if optype == 'Call' or optype == 'Put':
+            self.optype = optype
+        
+        else:
+            raise TypeError(f'''\n\nI've never heard of a {optype} type of option! Must be new...
+                Please stick to either `Call` or `Put` type options!''')
+        
         self.underlying_value = underlying_value
         self.strike_value = strike
         self.volatility = volatility
         self.risk_free = risk_free
         self.time_in_years = time_in_years
         
+
 
         # Internal Calculations.
         self.d1 = self.d1_calc()
@@ -54,7 +70,7 @@ class BlackScholesOPM:
         text = '''\nData node of a Black-Scholes-Merton Model for a {op} option where the underlying is $ {under_p},
 with a strike value of $ {strike_p}, an annual volatility of {vol}, a continuously-compounded 
 risk-free rate of {rf}. The option expires in {years} years.'''.format(
-                                                                    op = self.op_type,
+                                                                    op = self.optype,
                                                                     under_p = self.underlying_value,
                                                                     strike_p = self.strike_value,
                                                                     vol = self.volatility,
@@ -74,7 +90,7 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
     
 
     def normcdf_calc(self):
-        if self.op_type == 'Call':
+        if self.optype == 'Call':
             n1 = norm.cdf(self.d1)
             n2 = norm.cdf(self.d2)
         else: 
@@ -85,7 +101,7 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
     
     
     def value_calc(self):
-        if self.op_type == 'Call':
+        if self.optype == 'Call':
             value = self.underlying_value * self.n1 - self.strike_value * exp(-self.risk_free * self.time_in_years) * self.n2
         else: 
             #must be a put
@@ -95,7 +111,7 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
     
     # the greeks
     def delta_calc(self):
-        if self.op_type == 'Call':
+        if self.optype == 'Call':
             delta = norm.cdf(self.d1)
         else:
             #must be a put
@@ -108,7 +124,7 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
     
     
     def theta_calc(self):
-        if self.op_type == 'Call':
+        if self.optype == 'Call':
             theta = (-((self.underlying_value * norm.pdf(self.d1) * self.volatility)/(2 * sqrt(self.time_in_years))) 
             - self.risk_free * self.strike_value * exp(-self.risk_free*self.time_in_years) * norm.cdf(self.d2))
         else: 
@@ -120,7 +136,7 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
     
     # recommend not using vega
     def vega_calc(self):
-        if self.op_type == 'Call':
+        if self.optype == 'Call':
             vega = self.underlying_value * norm.pdf(self.d1) * sqrt(self.time_in_years)
         else:
             #must be a put
@@ -130,7 +146,7 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
     
     # recommend not using rho
     def rho_calc(self):
-        if self.op_type == 'Call':
+        if self.optype == 'Call':
             pass
         else:
             pass
@@ -168,7 +184,7 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
         print('Internal Values')
         print('----------------')
         
-        print('{} option value : ${}'.format(self.op_type, round(self.value, rounding)))
+        print('{} option value : ${}'.format(self.optype, round(self.value, rounding)))
 
         if hide_d_calc:
             pass

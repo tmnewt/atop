@@ -1,7 +1,7 @@
 from scipy.stats import norm
 from math import exp, log, sqrt
 
-class BlackScholesOp:
+class BlackScholesOPM:
     '''Data container for Black-Scholes-Merton calculations
     
     Given the type of option (Call or Put), the option's underlying asset value,
@@ -15,14 +15,15 @@ class BlackScholesOp:
     Currently does not support options where the underlying has intermediate cash
     flows such as a stock with a dividend payment. It will be implemented in the 
     future.'''
-    def __init__(self, op_type, underlying_value, strike, volatility, risk_free, time_in_years, trade_position = 'Long'):
+    def __init__(self, position, op_type, underlying_value, strike, volatility, risk_free, time_in_years):
+        self.position = position
         self.op_type = op_type
         self.underlying_value = underlying_value
         self.strike_value = strike
         self.volatility = volatility
         self.risk_free = risk_free
         self.time_in_years = time_in_years
-        self.trade_postion = trade_position  # by default is long. This does NOT affect calculations.
+        
 
         # Internal Calculations.
         self.d1 = self.d1_calc()
@@ -195,13 +196,3 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
             pass
         else:
             print('greek theta = {}'.format(round(self.theta, rounding)))
-        
-#example = BsmNode('Call', 100, 110, 0.14247, 0.05, 1)
-#print(example.delta)
-#print(example.gamma)
-#example = BsmNode('Put', 100, 110, 0.14247, 0.05, 1)
-#print(example.delta)
-#print(example.gamma)
-#print(example.theta_calc())
-#example.print_calc_values()
-

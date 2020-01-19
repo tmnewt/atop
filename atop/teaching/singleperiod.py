@@ -1,7 +1,7 @@
 from math import sqrt, log, exp
 
 
-class SinglePeriodOption:
+class SinglePeriodClassic:
     '''Single Period Binomial Option object
 
     Replicates part of the functionality of the BinomialOption class found 
@@ -129,7 +129,7 @@ class SinglePeriodOption:
             flip_pos = 'Put'
         else:
             flip_pos = 'Call'
-        flip = SinglePeriodOption('Long',flip_pos, self.underlying_value, 
+        flip = SinglePeriodClassic('Long',flip_pos, self.underlying_value, 
                                                  self.strike_value, 
                                                  self.up_value,
                                                  self.down_value,
@@ -170,7 +170,7 @@ class SinglePeriodOption:
         
 
         # message about input values
-        print(f'>>> SinglePeriodOption({pos}, {opt}, {under}, {strike}, {up}, {down}, {rf}, {name})')
+        print(f'>>> SinglePeriodClassic({pos}, {opt}, {under}, {strike}, {up}, {down}, {rf}, {name})')
         if skip_problem_display:
             print(f'{pos} {opt} value: $ {round(self.value,4)}')
             
@@ -634,29 +634,29 @@ class SinglePeriodOption:
 
 
 #test   
-#example = SinglePeriodOption('Long','Call', 100, 110, 120, 90.25, 0.05)
+#example = SinglePeriodClassic('Long','Call', 100, 110, 120, 90.25, 0.05)
 #print(example.value)
-#example = SinglePeriodOption('Short','Call', 100, 110, 120, 90.25, 0.05)
+#example = SinglePeriodClassic('Short','Call', 100, 110, 120, 90.25, 0.05)
 #print(example.value)
-#example = SinglePeriodOption('Long','Put', 100, 110, 120, 90.25, 0.05)
+#example = SinglePeriodClassic('Long','Put', 100, 110, 120, 90.25, 0.05)
 #print(example.value)
-#example = SinglePeriodOption('Short','Put', 100, 110, 120, 90.25, 0.05)
+#example = SinglePeriodClassic('Short','Put', 100, 110, 120, 90.25, 0.05)
 #print(example.value)
 # cool, it works.
 
 #additional tests.
-#example = SinglePeriodOption('Short','Put', 95.54, 107.89, 120.02, 90.25, 0.0342)
+#example = SinglePeriodClassic('Short','Put', 95.54, 107.89, 120.02, 90.25, 0.0342)
 #example.solution()
-#example = SinglePeriodOption('Short','Call', 95.54, 107.89, 120.02, 90.25, 0.0342)
+#example = SinglePeriodClassic('Short','Call', 95.54, 107.89, 120.02, 90.25, 0.0342)
 #example.solution()
 #example.put_call_parity_check()
 
 
-example = SinglePeriodOption('Long','Put', 105, 107.89, 120.02, 90.25, 0.0342)
+example = SinglePeriodClassic('Long','Put', 105, 107.89, 120.02, 90.25, 0.0342)
 example.solution()
 example.guide()
 
-#example = SinglePeriodOption('Long','Put', 105, 107.89, 120.02, 90.25, 0.0342)
+#example = SinglePeriodClassic('Long','Put', 105, 107.89, 120.02, 90.25, 0.0342)
 #example.solution()
 
 

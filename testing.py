@@ -106,5 +106,5 @@ print(single_period_put.get_value())
 teaching_example = SinglePeriodClassic('Long','Call', 100, 110, 120, 90.25, 0.05)
 print(teaching_example.get_value())
 
-# there is a slight calculation discrepancy each pricing model. Likely to to with the precision of inputs.
+# there is a slight calculation discrepancy in the pricing models agreement. Likely to to with the precision of inputs.
 # need to investigate... 

@@ -4,21 +4,21 @@ from math import exp, log, sqrt
 class BlackScholesOp:
     '''Data container for Black-Scholes-Merton calculations
     
-    Given the type of option (Call or Put), the option's underlying asset price,
-    the contract's strike price, the annual volatility of the underlying, a 
+    Given the type of option (Call or Put), the option's underlying asset value,
+    the contract's strike value, the annual volatility of the underlying, a 
     continuously compounded annual risk-free rate, and a length of time (in years)
     the class will generate and store all intermediate calculation values as well
     as various greek values associated with the option.
     
-    Primary calculation is the option price.
+    Primary calculation is the option value.
 
     Currently does not support options where the underlying has intermediate cash
     flows such as a stock with a dividend payment. It will be implemented in the 
     future.'''
-    def __init__(self, op_type, underlying, strike, volatility, risk_free, time_in_years, trade_position = 'Long'):
+    def __init__(self, op_type, underlying_value, strike, volatility, risk_free, time_in_years, trade_position = 'Long'):
         self.op_type = op_type
-        self.underlying = underlying
-        self.strike = strike
+        self.underlying_value = underlying_value
+        self.strike_value = strike
         self.volatility = volatility
         self.risk_free = risk_free
         self.time_in_years = time_in_years
@@ -30,7 +30,7 @@ class BlackScholesOp:
         self.n1 = self.normcdf_calc()[0]
         self.n2 = self.normcdf_calc()[1]
 
-        self.price = self.price_calc()
+        self.value = self.value_calc()
         
         # greeks
         self.delta = self.delta_calc()
@@ -51,11 +51,11 @@ class BlackScholesOp:
 
     def __repr__(self):
         text = '''\nData node of a Black-Scholes-Merton Model for a {op} option where the underlying is $ {under_p},
-with a strike price of $ {strike_p}, an annual volatility of {vol}, a continuously-compounded 
+with a strike value of $ {strike_p}, an annual volatility of {vol}, a continuously-compounded 
 risk-free rate of {rf}. The option expires in {years} years.'''.format(
                                                                     op = self.op_type,
-                                                                    under_p = self.underlying,
-                                                                    strike_p = self.strike,
+                                                                    under_p = self.underlying_value,
+                                                                    strike_p = self.strike_value,
                                                                     vol = self.volatility,
                                                                     rf = self.risk_free,
                                                                     years = self.time_in_years
@@ -64,7 +64,7 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
 
     # internal class calculations.
     def d1_calc(self):
-        return ((log(self.underlying/self.strike) + (self.risk_free + (self.volatility**2)/2)*self.time_in_years) / 
+        return ((log(self.underlying_value/self.strike_value) + (self.risk_free + (self.volatility**2)/2)*self.time_in_years) / 
         (self.volatility * sqrt(self.time_in_years)))
         
     
@@ -83,13 +83,13 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
         return [n1, n2]
     
     
-    def price_calc(self):
+    def value_calc(self):
         if self.op_type == 'Call':
-            price = self.underlying * self.n1 - self.strike * exp(-self.risk_free * self.time_in_years) * self.n2
+            value = self.underlying_value * self.n1 - self.strike_value * exp(-self.risk_free * self.time_in_years) * self.n2
         else: 
             #must be a put
-            price = -self.underlying * self.n1 + self.strike * exp(-self.risk_free * self.time_in_years) * self.n2
-        return price
+            value = -self.underlying_value * self.n1 + self.strike_value * exp(-self.risk_free * self.time_in_years) * self.n2
+        return value
     
     
     # the greeks
@@ -103,27 +103,27 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
 
     
     def gamma_calc(self):
-        return (1/(self.underlying*self.volatility*sqrt(self.time_in_years))) * norm.pdf(self.d1)
+        return (1/(self.underlying_value*self.volatility*sqrt(self.time_in_years))) * norm.pdf(self.d1)
     
     
     def theta_calc(self):
         if self.op_type == 'Call':
-            theta = (-((self.underlying * norm.pdf(self.d1) * self.volatility)/(2 * sqrt(self.time_in_years))) 
-            - self.risk_free * self.strike * exp(-self.risk_free*self.time_in_years) * norm.cdf(self.d2))
+            theta = (-((self.underlying_value * norm.pdf(self.d1) * self.volatility)/(2 * sqrt(self.time_in_years))) 
+            - self.risk_free * self.strike_value * exp(-self.risk_free*self.time_in_years) * norm.cdf(self.d2))
         else: 
             #must be a put
-            theta = (-((self.underlying * norm.pdf(-self.d1) * self.volatility)/(2 * sqrt(self.time_in_years))) 
-            + self.risk_free * self.strike * exp(-self.risk_free*self.time_in_years) * norm.cdf(-self.d2))
+            theta = (-((self.underlying_value * norm.pdf(-self.d1) * self.volatility)/(2 * sqrt(self.time_in_years))) 
+            + self.risk_free * self.strike_value * exp(-self.risk_free*self.time_in_years) * norm.cdf(-self.d2))
         return theta
 
     
     # recommend not using vega
     def vega_calc(self):
         if self.op_type == 'Call':
-            vega = self.underlying * norm.pdf(self.d1) * sqrt(self.time_in_years)
+            vega = self.underlying_value * norm.pdf(self.d1) * sqrt(self.time_in_years)
         else:
             #must be a put
-            vega = self.strike * exp(-self.risk_free * self.time_in_years) * norm.pdf(self.d2) * sqrt(self.time_in_years)
+            vega = self.strike_value * exp(-self.risk_free * self.time_in_years) * norm.pdf(self.d2) * sqrt(self.time_in_years)
         return vega
     
     
@@ -136,10 +136,9 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
         return NotImplemented
 
 
+    def get_value(self):
+        return self.value
 
-
-    def get_trade_position(self):
-        return self.trade_postion
 
 
 
@@ -168,7 +167,7 @@ risk-free rate of {rf}. The option expires in {years} years.'''.format(
         print('Internal Values')
         print('----------------')
         
-        print('{} option price : ${}'.format(self.op_type, round(self.price, rounding)))
+        print('{} option value : ${}'.format(self.op_type, round(self.value, rounding)))
 
         if hide_d_calc:
             pass

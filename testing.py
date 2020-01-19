@@ -2,7 +2,7 @@
 
 from atop.options.calloption import CallOption 
 
-from atop.opm.nperiodbopm import NPeriodBOPM
+from atop.opm.npbopm import NPeriodBOPM
 from atop.opm.bsm import BlackScholesOp
 
 
@@ -80,7 +80,7 @@ bsm_example = BlackScholesOp('Call', 100, 110, 0.14247, 0.05, 1)
 print(bsm_example.price)
 
 # Back to the NPeriodBOPM:
-# We can also force it to behave like a single period binomial pricing tool!
+# We can also force it to behave like the single period binomial pricing tool!
 single_period_call = NPeriodBOPM('Call', 100, 110, 0.14247, 0.05, 1, 1)
 print(single_period_call.get_price())
 

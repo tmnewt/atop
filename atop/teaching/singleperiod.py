@@ -19,16 +19,18 @@ class SinglePeriodClassic:
         position = position.lower().capitalize()
         if position == 'Long' or position == 'Short':
             self.position = position
+        
         else:
             raise TypeError(f'''\n\n{position} does not describe a type of trade. Please input `long` or `short`
-        when refering to what side of the trade you are on.''')
+                when refering to what side of the trade you are on.''')
         
         optype = optype.lower().capitalize()
         if optype == 'Call' or optype == 'Put':
             self.optype = optype
+        
         else:
             raise TypeError(f'''\n\nI've never heard of a {optype} type of option! Must be new...
-        Please stick to either `Call` or `Put` type options!''') 
+                Please stick to either `Call` or `Put` type options!''') 
 
         self.underlying_value = underlying_value
         self.strike_value =     strike_value

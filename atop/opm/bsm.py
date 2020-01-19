@@ -15,7 +15,11 @@ class BlackScholesOPM:
     Currently does not support options where the underlying has intermediate cash
     flows such as a stock with a dividend payment. It will be implemented in the 
     future.'''
-    def __init__(self, position, optype, underlying_value, strike, volatility, risk_free, time_in_years):
+    def __init__(self, position: str, optype: str, 
+                    underlying_value: float or int, 
+                    strike_value: float or int, 
+                    volatility: float, risk_free: float, 
+                    time_in_years: float or int):
         
         position = position.lower().capitalize()
         if position == 'Long' or position == 'Short':
@@ -34,7 +38,7 @@ class BlackScholesOPM:
                 Please stick to either `Call` or `Put` type options!''')
         
         self.underlying_value = underlying_value
-        self.strike_value = strike
+        self.strike_value = strike_value
         self.volatility = volatility
         self.risk_free = risk_free
         self.time_in_years = time_in_years

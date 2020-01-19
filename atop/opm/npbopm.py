@@ -5,7 +5,7 @@ import numpy as np
 class NPeriodBOPM:
 
     def __init__(self, position: str, optype: str, 
-                    underlying_value_value: float or int, 
+                    underlying_value: float or int, 
                     strike_value: float or int, 
                     volatility: float, risk_free: float, 
                     nperiods: int, time_in_years: float or int, 
@@ -28,7 +28,7 @@ class NPeriodBOPM:
                 Please stick to either `Call` or `Put` type options!''')
         
 
-        self.underlying_value = underlying_value_value
+        self.underlying_value = underlying_value
         self.strike_value = strike_value
         self.volatility = volatility
         self.risk_free = risk_free

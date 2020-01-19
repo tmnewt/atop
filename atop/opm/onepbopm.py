@@ -93,9 +93,7 @@ class OnePeriodBOPM:
     def __up_risk_neutral_calc(self):
         return (((1+self.risk_free)*(self.underlying_value)-self.down_value)
                             /(self.up_value-self.down_value))
-
-
     
-    def get_price(self):
+    def get_value(self):
         return self.value
 

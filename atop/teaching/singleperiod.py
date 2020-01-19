@@ -652,12 +652,11 @@ class SinglePeriodClassic:
 #example.put_call_parity_check()
 
 
-example = SinglePeriodClassic('Long','Put', 105, 107.89, 120.02, 90.25, 0.0342)
-example.solution()
-example.guide()
-
+# final tests
 #example = SinglePeriodClassic('Long','Put', 105, 107.89, 120.02, 90.25, 0.0342)
 #example.solution()
+#example.guide()
+
 
 
 

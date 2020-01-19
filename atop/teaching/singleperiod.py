@@ -22,8 +22,6 @@ class SinglePeriodClassic:
         self.up_value =         up_value
         self.down_value =       down_value
         self.risk_free =        risk_free
-       
-        
         
         # internal calculations
         self.__pos_eff =     self.__position_effect_calc()
@@ -107,7 +105,10 @@ class SinglePeriodClassic:
         dnf = exp(self.risk_free - (sigma**2 / 2) - sigma)
         return [upf, dnf]
 
+    
+    
     # 'poking' values and seeing how things change.
+    # something for the future
     def poke_underlying(self):
         return NotImplemented
     

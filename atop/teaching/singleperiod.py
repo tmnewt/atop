@@ -307,9 +307,8 @@ class SinglePeriodClassic:
         
         # logic for each type and each possible position.
         if self.position == 'Long':
-            print(f'''
-\nIn this problem we are going long, meaning we are purchasing a
-{opt} option on {name}.''')
+            print(f'''\nIn this problem we are going long, meaning we are purchasing a
+                {opt} option on {name}.''')
             
             if self.optype == 'Call':
                 #String chunk for if call.

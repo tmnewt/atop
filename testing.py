@@ -3,7 +3,10 @@
 from atop.options.calloption import CallOption 
 
 from atop.opm.npbopm import NPeriodBOPM
-from atop.opm.bsm import BlackScholesOp
+from atop.opm.bsm import BlackScholesOPM
+from atop.opm.onepbopm import OnePeriodBOPM
+
+from atop.teaching.singleperiod import SinglePeriodClassic
 
 
 # The CallOption and PutOption class handle single period options whose 
@@ -56,33 +59,52 @@ nodeT0.print_calc_values()
 # I actually hate these classes. They are the oldest and poorly constructed.
 # All their issues are addressed in other classes. Speaking of which:
 
+
+
+
 # Example of more compact n-period binomial option pricing model.
-two_period_call = NPeriodBOPM('Call', 100, 110, 0.14247, 0.05, 2, 1)
-print(two_period_call.get_price())
+two_period_call = NPeriodBOPM('Long', 'Call', 100, 110, 0.14247, 0.05, 2, 1)
+print(two_period_call.get_value())
 
 # Can also use this for valuing puts
-two_period_put = NPeriodBOPM('Put', 100, 110, 0.14247, 0.05, 2, 1)
-print(two_period_put.get_price())
+two_period_put = NPeriodBOPM('Long','Put', 100, 110, 0.14247, 0.05, 2, 1)
+print(two_period_put.get_value())
 
 # Those examples calculated the up & down factors using Jarrow-Rudd
 # specification. But we can also use the Cox-Ross-Rubinstein specification.
 
-cox_example = NPeriodBOPM('Call', 100, 110, 0.14247, 0.05, 2, 1, 'Cox')
-print(cox_example.get_price())  # notice the different price.
+cox_example = NPeriodBOPM('Long', 'Call', 100, 110, 0.14247, 0.05, 2, 1, 'Cox')
+print(cox_example.get_value())  # notice the different price.
 
 # We can add even more periods! Here is 10,000 time periods.
-two_period_put = NPeriodBOPM('Call', 100, 110, 0.14247, 0.05, 10000, 1)
-print(two_period_put.get_price())
+two_period_put = NPeriodBOPM('Long', 'Call', 100, 110, 0.14247, 0.05, 10000, 1)
+print(two_period_put.get_value())
 
 # that's pretty much the same answer given by the Black-Scholes-Merton model
 # Observe:
-bsm_example = BlackScholesOp('Call', 100, 110, 0.14247, 0.05, 1)
-print(bsm_example.price)
+bsm_example = BlackScholesOPM('Long', 'Call', 100, 110, 0.14247, 0.05, 1)
+print(bsm_example.get_value())
+
+
+# Back to more simple stuff:
+# Using the class `OnePeriodBOPM` 
+one_period_example = OnePeriodBOPM('Long', 'Call', 100, 110, 0.14247, 0.05)
+print(one_period_example.get_value())
+
+one_period_example = OnePeriodBOPM('Long', 'Put', 100, 110, 0.14247, 0.05)
+print(one_period_example.get_value())
 
 # Back to the NPeriodBOPM:
 # We can also force it to behave like the single period binomial pricing tool!
-single_period_call = NPeriodBOPM('Call', 100, 110, 0.14247, 0.05, 1, 1)
-print(single_period_call.get_price())
+single_period_call = NPeriodBOPM('Long', 'Call', 100, 110, 0.14247, 0.05, 1, 1)
+print(single_period_call.get_value())
 
-single_period_put = NPeriodBOPM('Put', 100, 110, 0.14247, 0.05, 1, 1)
-print(single_period_put.get_price())
+single_period_put = NPeriodBOPM('Long', 'Put', 100, 110, 0.14247, 0.05, 1, 1)
+print(single_period_put.get_value())
+
+# Also there is a special class for teaching.
+teaching_example = SinglePeriodClassic('Long','Call', 100, 110, 120, 90.25, 0.05)
+print(teaching_example.get_value())
+
+# there is a slight calculation discrepancy each pricing model. Likely to to with the precision of inputs.
+# need to investigate... 

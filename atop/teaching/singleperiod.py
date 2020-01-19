@@ -171,7 +171,7 @@ class SinglePeriodClassic:
         
 
         # message about input values
-        print(f'>>> SinglePeriodClassic({pos}, {opt}, {under}, {strike}, {up}, {down}, {rf}, {name})')
+        print(f'input: SinglePeriodClassic({pos}, {opt}, {under}, {strike}, {up}, {down}, {rf}, {name})')
         if skip_problem_display:
             print(f'{pos} {opt} value: $ {round(self.value,4)}')
             

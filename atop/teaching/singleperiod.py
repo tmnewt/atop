@@ -5,7 +5,7 @@ class SinglePeriodClassic:
     '''Single Period Binomial Option object
 
     Replicates part of the functionality of the BinomialOption class found 
-    in the options directory. This class is newer and more simple to use. 
+    in the options directory. This class is newer and easier to use. 
     Great for demonstrating single period binomial option pricing model 
     without having to worry about complex topics like volatility, actual
     probability, or time! This is only for educational purposes. '''

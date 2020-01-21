@@ -7,7 +7,7 @@ class OnePeriodBOPM:
                     underlying_value: float or int,
                     strike_value: float or int,
                     volatility: float,
-                    risk_free: float or int):
+                    risk_free: float):
         
         position = position.lower().capitalize()
         if position == 'Long' or position == 'Short':
@@ -99,7 +99,7 @@ class OnePeriodBOPM:
                 /(self.up_value - self.down_value))
 
     def __rf_units_calc(self):
-        return (1/(1+self.risk_free)
+        return (exp(-self.risk_free)
          *(self.up_payoff-(self.hedge_ratio*self.up_value)))
 
     def __value_calc(self):

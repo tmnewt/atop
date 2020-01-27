@@ -1,7 +1,7 @@
 # showcasing the classes
 
 from atop.opm.npbopm import NPeriodBOPM
-from atop.opm.bsm import BlackScholesOPM
+from atop.opm.bsmopm import BlackScholesOPM
 from atop.opm.onepbopm import OnePeriodBOPM
 
 from atop.teaching.singleperiod import SinglePeriodClassic

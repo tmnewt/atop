@@ -99,9 +99,7 @@ print(f'{nperiod_example.position} {nperiod_example.optype}: {nperiod_example.ge
 nperiod_example = NPeriodBOPM('short', 'Put', 100, 110, 0.14247, 0.05, 1, 1)
 print(f'{nperiod_example.position} {nperiod_example.optype}: {nperiod_example.get_value():.5f}\n')
 
-# Also there is a special class for teaching.
-teaching_example = SinglePeriodClassic('long','call', 100, 110, 120, 90.245, 0.05)
-#print(teaching_example.get_value())
+
 
 print('''by the way: because of numpy broadcasting nature we
 can't capture the changes in the pricing array. To get around this,
